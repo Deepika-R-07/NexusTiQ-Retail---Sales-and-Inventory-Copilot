@@ -3,7 +3,6 @@ TRACK_ID=PS03
 Retail Sales and Inventory Copilot:
 
 
-GEMINI_API_KEY="AQ.Ab8RN6JSMo8d5e80CbjCM73AlIwyCCbYSDdQMmLJobgJgdVldw"
 
 Demo link:https://drive.google.com/file/d/1bt2KOaqgbL3FLKlSb3Cf0jqxOq51vSLk/view?usp=sharing
 
