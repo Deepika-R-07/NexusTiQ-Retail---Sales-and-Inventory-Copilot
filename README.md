@@ -1,6 +1,8 @@
 TRACK_ID=PS03
 
-Retail Sales and Inventory Copilot
+Retail Sales and Inventory Copilot:
+
+
 GEMINI_API_KEY="AQ.Ab8RN6JSMo8d5e80CbjCM73AlIwyCCbYSDdQMmLJobgJgdVldw"
 An AI-powered decision-support application that helps retail store managers monitor sales, identify inventory risks, understand store performance, and make faster inventory decisions using deterministic analytics and a grounded Gemini-powered AI Copilot.
 
