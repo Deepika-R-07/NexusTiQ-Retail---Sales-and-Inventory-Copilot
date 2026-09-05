@@ -478,4 +478,76 @@ Seasonal demand analysis
 Multi-store inventory transfer recommendations
 User authentication and role-based access
 
+How to Run
+
+The application is designed to run from a clean Python 3.11 environment.
+
+The backend and frontend are served together by the Python application.
+
+Prerequisites
+Python 
+Google Gemini API key
+
+The application reads the Gemini API key from the environment variable:
+
+GEMINI_API_KEY
+
+1. Clone the Repository
+git clone <YOUR_GITHUB_REPOSITORY_URL>
+cd retail-sales-inventory-copilot
+2. Install Dependencies
+
+From the repository root:
+
+pip install -r requirements.txt
+
+No separate frontend installation or build command is required.
+
+3. Configure Gemini API Key
+
+Do not place the Gemini API key in the source code or commit it to GitHub.
+
+The application expects the key through:
+
+GEMINI_API_KEY
+
+Windows PowerShell
+$env:GEMINI_API_KEY="YOUR_GEMINI_API_KEY"
+Linux / macOS
+export GEMINI_API_KEY="YOUR_GEMINI_API_KEY"
+
+The judge can provide their own Gemini API key using the same environment variable.
+
+4. Start the Application
+
+Run:
+
+python app.py
+
+The application starts on:
+
+http://localhost:8000
+5. Open the Application
+
+Open the following address in a browser:
+
+http://localhost:8000
+
+The dashboard will load with the generated retail sales and inventory data.
+
+One-Command Startup
+
+After installing dependencies and configuring the Gemini API key, the entire application is started using:
+
+python app.py
+
+No second terminal is required.
+
+No separate frontend server is required.
+
+No frontend build command is required.
+
+No manual database setup is required.
+
+The Python application serves both the backend APIs and the frontend.
 
