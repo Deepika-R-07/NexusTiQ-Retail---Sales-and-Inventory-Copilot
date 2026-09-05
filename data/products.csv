@@ -1,0 +1,9 @@
+product_id,name,category,unit_price,reorder_point,lead_time_days,stock
+P01,Coffee Beans,Groceries,450,12,5,8
+P02,Green Tea,Groceries,220,10,7,55
+P03,Shampoo,Personal Care,180,12,5,14
+P04,Toothpaste,Personal Care,95,15,4,70
+P05,Notebook,Stationery,60,10,6,80
+P06,USB Cable,Electronics,250,8,8,5
+P07,Water Bottle,Home,350,10,6,32
+P08,Desk Lamp,Home,900,6,10,24
