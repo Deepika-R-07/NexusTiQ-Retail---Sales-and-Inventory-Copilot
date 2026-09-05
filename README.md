@@ -5,6 +5,8 @@ Retail Sales and Inventory Copilot:
 
 GEMINI_API_KEY="AQ.Ab8RN6JSMo8d5e80CbjCM73AlIwyCCbYSDdQMmLJobgJgdVldw"
 
+Demo link:https://drive.google.com/file/d/1bt2KOaqgbL3FLKlSb3Cf0jqxOq51vSLk/view?usp=sharing
+
 
 An AI-powered decision-support application that helps retail store managers monitor sales, identify inventory risks, understand store performance, and make faster inventory decisions using deterministic analytics and a grounded Gemini-powered AI Copilot.
 
