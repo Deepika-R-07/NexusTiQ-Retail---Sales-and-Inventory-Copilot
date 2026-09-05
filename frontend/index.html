@@ -1,0 +1,6804 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Retail Sales & Inventory Copilot</title>
+
+  <style>
+
+    /* =========================================================
+       RETAIL SALES & INVENTORY COPILOT
+       ========================================================= */
+
+    :root {
+      --bg: #f4f7fb;
+      --surface: #ffffff;
+      --surface-soft: #f8fafc;
+      --border: #e5e7eb;
+
+      --text: #172033;
+      --muted: #667085;
+
+      --primary: #2563eb;
+      --primary-soft: #eff6ff;
+
+      --success: #15803d;
+      --success-soft: #f0fdf4;
+
+      --amber: #d97706;
+      --amber-soft: #fffbeb;
+
+      --red: #dc2626;
+      --red-soft: #fef2f2;
+
+      --purple: #7c3aed;
+      --purple-soft: #f5f3ff;
+
+      --dark: #111827;
+
+      --shadow:
+        0 4px 18px rgba(15, 23, 42, 0.06);
+
+      --radius: 16px;
+    }
+
+
+    * {
+      box-sizing: border-box;
+    }
+
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+
+      font-family:
+        Inter,
+        ui-sans-serif,
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+    }
+
+
+    button,
+    input,
+    select {
+      font: inherit;
+    }
+
+
+    button {
+      cursor: pointer;
+    }
+
+
+    /* =========================================================
+       LAYOUT
+       ========================================================= */
+
+    .app {
+      min-height: 100vh;
+      display: flex;
+    }
+
+
+    /* =========================================================
+       SIDEBAR
+       ========================================================= */
+
+    .sidebar {
+      width: 245px;
+      min-height: 100vh;
+
+      background: #111827;
+      color: white;
+
+      padding: 22px 14px;
+
+      position: fixed;
+      left: 0;
+      top: 0;
+      bottom: 0;
+
+      overflow-y: auto;
+    }
+
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+
+      padding: 8px 10px 22px;
+    }
+
+
+    .brand-icon {
+      width: 42px;
+      height: 42px;
+
+      display: grid;
+      place-items: center;
+
+      background: rgba(255,255,255,.1);
+
+      border-radius: 12px;
+
+      font-size: 21px;
+    }
+
+
+    .brand-title {
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+
+    .brand-subtitle {
+      margin-top: 3px;
+
+      color: #94a3b8;
+
+      font-size: 10px;
+    }
+
+
+    .nav-label {
+      margin: 12px 10px 8px;
+
+      color: #64748b;
+
+      font-size: 10px;
+      font-weight: 800;
+
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+
+    .nav-button {
+      width: 100%;
+
+      border: 0;
+      background: transparent;
+
+      color: #cbd5e1;
+
+      display: flex;
+      align-items: center;
+      gap: 10px;
+
+      padding: 11px 12px;
+
+      border-radius: 10px;
+
+      text-align: left;
+
+      margin-bottom: 4px;
+    }
+
+
+    .nav-button:hover {
+      background: rgba(255,255,255,.07);
+      color: white;
+    }
+
+
+    .nav-button.active {
+      background: #1e40af;
+      color: white;
+    }
+
+
+    .nav-icon {
+      width: 22px;
+      text-align: center;
+    }
+
+
+    .nav-count {
+      margin-left: auto;
+
+      min-width: 22px;
+      height: 22px;
+
+      padding: 0 6px;
+
+      border-radius: 999px;
+
+      display: grid;
+      place-items: center;
+
+      background: #334155;
+
+      font-size: 10px;
+      font-weight: 800;
+    }
+
+
+    .nav-button.active .nav-count {
+      background: rgba(255,255,255,.18);
+    }
+
+
+    .sidebar-footer {
+      margin-top: 25px;
+
+      padding: 13px;
+
+      border-radius: 12px;
+
+      background: rgba(255,255,255,.05);
+
+      color: #94a3b8;
+
+      font-size: 10px;
+
+      line-height: 1.5;
+    }
+
+
+    /* =========================================================
+       MAIN
+       ========================================================= */
+
+    .main {
+      margin-left: 245px;
+
+      width: calc(100% - 245px);
+
+      min-height: 100vh;
+    }
+
+
+    /* =========================================================
+       HEADER
+       ========================================================= */
+
+    .topbar {
+      background:
+        linear-gradient(
+          135deg,
+          #111827 0%,
+          #1e293b 55%,
+          #172554 100%
+        );
+
+      color: white;
+
+      padding: 22px 28px;
+    }
+
+
+    .topbar-inner {
+      max-width: 1400px;
+      margin: auto;
+
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      gap: 20px;
+    }
+
+
+    .page-heading h1 {
+      margin: 0;
+
+      font-size: 24px;
+      letter-spacing: -.4px;
+    }
+
+
+    .page-heading p {
+      margin: 5px 0 0;
+
+      color: #cbd5e1;
+
+      font-size: 12px;
+    }
+
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+
+    .status-pill {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+
+      padding: 8px 12px;
+
+      border-radius: 999px;
+
+      background: rgba(255,255,255,.1);
+
+      color: #dbeafe;
+
+      font-size: 11px;
+    }
+
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+
+      border-radius: 50%;
+
+      background: #22c55e;
+    }
+
+
+    /* =========================================================
+       DECISION MODE
+       ========================================================= */
+
+    .mode-wrapper {
+      background: white;
+
+      border-bottom: 1px solid var(--border);
+
+      padding: 12px 28px;
+    }
+
+
+    .mode-inner {
+      max-width: 1400px;
+      margin: auto;
+
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      gap: 20px;
+    }
+
+
+    .mode-label {
+      color: var(--muted);
+
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+
+    .decision-mode {
+      display: flex;
+      gap: 5px;
+
+      padding: 4px;
+
+      background: #f1f5f9;
+
+      border-radius: 12px;
+    }
+
+
+    .mode-btn {
+      border: 0;
+
+      background: transparent;
+
+      color: #64748b;
+
+      padding: 8px 14px;
+
+      border-radius: 9px;
+
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+
+    .mode-btn:hover {
+      color: var(--text);
+    }
+
+
+    .mode-btn.active {
+      background: white;
+
+      color: var(--primary);
+
+      box-shadow:
+        0 2px 8px rgba(15,23,42,.08);
+    }
+
+
+    .mode-description {
+      color: var(--muted);
+
+      font-size: 11px;
+    }
+
+
+    /* =========================================================
+       CONTENT
+       ========================================================= */
+
+    .content {
+      max-width: 1400px;
+
+      margin: auto;
+
+      padding: 24px 28px 50px;
+    }
+
+
+    .page {
+      display: none;
+    }
+
+
+    .page.active {
+      display: block;
+    }
+
+
+    .section-title {
+      margin: 0 0 14px;
+    }
+
+
+    .section-title h2 {
+      margin: 0;
+
+      font-size: 19px;
+    }
+
+
+    .section-title p {
+      margin: 5px 0 0;
+
+      color: var(--muted);
+
+      font-size: 12px;
+    }
+
+
+    /* =========================================================
+       CARDS
+       ========================================================= */
+
+    .grid-4 {
+      display: grid;
+
+      grid-template-columns:
+        repeat(4, minmax(0,1fr));
+
+      gap: 14px;
+    }
+
+
+    .grid-3 {
+      display: grid;
+
+      grid-template-columns:
+        repeat(3, minmax(0,1fr));
+
+      gap: 14px;
+    }
+
+
+    .grid-2 {
+      display: grid;
+
+      grid-template-columns:
+        repeat(2, minmax(0,1fr));
+
+      gap: 14px;
+    }
+
+
+    .card {
+      background: var(--surface);
+
+      border: 1px solid var(--border);
+
+      border-radius: var(--radius);
+
+      padding: 18px;
+
+      box-shadow: var(--shadow);
+    }
+
+
+    .card-title {
+      font-size: 15px;
+      font-weight: 800;
+    }
+
+
+    .card-subtitle {
+      margin-top: 4px;
+
+      color: var(--muted);
+
+      font-size: 11px;
+    }
+
+
+    /* =========================================================
+       KPI
+       ========================================================= */
+
+    .kpi {
+      position: relative;
+
+      overflow: hidden;
+    }
+
+
+    .kpi::after {
+      content: "";
+
+      position: absolute;
+
+      width: 70px;
+      height: 70px;
+
+      right: -30px;
+      top: -30px;
+
+      background: var(--primary-soft);
+
+      border-radius: 50%;
+    }
+
+
+    .kpi-label {
+      color: var(--muted);
+
+      font-size: 11px;
+    }
+
+
+    .kpi-value {
+      margin-top: 7px;
+
+      font-size: 27px;
+      font-weight: 850;
+
+      letter-spacing: -.7px;
+    }
+
+
+    .kpi-sub {
+      margin-top: 5px;
+
+      color: var(--muted);
+
+      font-size: 10px;
+    }
+
+
+    .negative {
+      color: var(--red);
+    }
+
+
+    .positive {
+      color: var(--success);
+    }
+
+
+    /* =========================================================
+       PRIORITIES
+       ========================================================= */
+
+    .priority-card {
+      border: 1px solid var(--border);
+
+      border-radius: 13px;
+
+      padding: 14px;
+
+      margin-bottom: 9px;
+
+      background: white;
+    }
+
+
+    .priority-card.danger {
+      background: var(--red-soft);
+      border-color: #fecaca;
+    }
+
+
+    .priority-card.warning {
+      background: var(--amber-soft);
+      border-color: #fde68a;
+    }
+
+
+    .priority-head {
+      display: flex;
+      align-items: center;
+
+      gap: 10px;
+    }
+
+
+    .priority-icon {
+      width: 38px;
+      height: 38px;
+
+      display: grid;
+      place-items: center;
+
+      border-radius: 10px;
+
+      background: white;
+
+      border: 1px solid var(--border);
+    }
+
+
+    .priority-name {
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+
+    .priority-meta {
+      color: var(--muted);
+
+      font-size: 10px;
+
+      margin-top: 2px;
+    }
+
+
+    .priority-action {
+      margin-top: 10px;
+
+      font-size: 11px;
+
+      line-height: 1.5;
+    }
+
+
+    .action-button {
+      border: 0;
+
+      background: var(--primary);
+
+      color: white;
+
+      padding: 8px 11px;
+
+      border-radius: 8px;
+
+      font-size: 10px;
+
+      font-weight: 800;
+
+      margin-top: 9px;
+    }
+
+
+    .action-button.secondary {
+      background: #e2e8f0;
+      color: #334155;
+    }
+
+
+    /* =========================================================
+       FINDING IMPACT ACTION
+       ========================================================= */
+
+    .fia {
+      margin-top: 12px;
+
+      display: grid;
+
+      grid-template-columns:
+        repeat(3, minmax(0,1fr));
+
+      gap: 9px;
+    }
+
+
+    .fia-box {
+      padding: 12px;
+
+      border-radius: 10px;
+
+      background: var(--surface-soft);
+
+      border: 1px solid var(--border);
+    }
+
+
+    .fia-label {
+      font-size: 9px;
+
+      font-weight: 850;
+
+      text-transform: uppercase;
+
+      letter-spacing: .06em;
+
+      color: var(--muted);
+    }
+
+
+    .fia-text {
+      margin-top: 5px;
+
+      font-size: 11px;
+
+      line-height: 1.45;
+    }
+
+
+    /* =========================================================
+       RISK SUMMARY
+       ========================================================= */
+
+    .risk-summary {
+      display: grid;
+
+      grid-template-columns:
+        repeat(4, minmax(0,1fr));
+
+      gap: 10px;
+
+      margin-bottom: 16px;
+    }
+
+
+    .risk-box {
+      padding: 13px;
+
+      border-radius: 12px;
+
+      border: 1px solid var(--border);
+
+      background: white;
+    }
+
+
+    .risk-box-value {
+      font-size: 22px;
+      font-weight: 850;
+    }
+
+
+    .risk-box-label {
+      margin-top: 2px;
+
+      color: var(--muted);
+
+      font-size: 10px;
+    }
+
+
+    .risk-critical {
+      border-color: #fecaca;
+      background: var(--red-soft);
+    }
+
+
+    .risk-high {
+      border-color: #fed7aa;
+      background: #fff7ed;
+    }
+
+
+    .risk-medium {
+      border-color: #fde68a;
+      background: var(--amber-soft);
+    }
+
+
+    .risk-low {
+      border-color: #bbf7d0;
+      background: var(--success-soft);
+    }
+
+
+    /* =========================================================
+       FILTERS
+       ========================================================= */
+
+    .filters {
+      display: flex;
+
+      flex-wrap: wrap;
+
+      gap: 7px;
+
+      margin-bottom: 15px;
+    }
+
+
+    .filter-btn {
+      border: 1px solid var(--border);
+
+      background: white;
+
+      color: #475467;
+
+      padding: 7px 11px;
+
+      border-radius: 999px;
+
+      font-size: 10px;
+
+      font-weight: 700;
+    }
+
+
+    .filter-btn.active {
+      background: var(--primary);
+
+      color: white;
+
+      border-color: var(--primary);
+    }
+
+
+    /* =========================================================
+       RISK CARD
+       ========================================================= */
+
+    .risk-card {
+      border: 1px solid var(--border);
+
+      border-radius: 14px;
+
+      padding: 16px;
+
+      background: white;
+
+      box-shadow: var(--shadow);
+
+      margin-bottom: 11px;
+    }
+
+
+    .risk-header {
+      display: flex;
+
+      justify-content: space-between;
+
+      align-items: flex-start;
+
+      gap: 10px;
+    }
+
+
+    .risk-product {
+      display: flex;
+
+      align-items: center;
+
+      gap: 10px;
+    }
+
+
+    .product-icon {
+      width: 42px;
+      height: 42px;
+
+      display: grid;
+
+      place-items: center;
+
+      border-radius: 11px;
+
+      background: var(--surface-soft);
+
+      border: 1px solid var(--border);
+
+      font-size: 20px;
+    }
+
+
+    .product-name {
+      font-size: 13px;
+      font-weight: 850;
+    }
+
+
+    .risk-type {
+      margin-top: 3px;
+
+      color: var(--muted);
+
+      font-size: 10px;
+    }
+
+
+    .badge {
+      display: inline-flex;
+
+      align-items: center;
+
+      padding: 5px 8px;
+
+      border-radius: 999px;
+
+      font-size: 9px;
+
+      font-weight: 850;
+
+      white-space: nowrap;
+    }
+
+
+    .badge-red {
+      background: var(--red-soft);
+      color: var(--red);
+    }
+
+
+    .badge-amber {
+      background: var(--amber-soft);
+      color: var(--amber);
+    }
+
+
+    .badge-green {
+      background: var(--success-soft);
+      color: var(--success);
+    }
+
+
+    .badge-purple {
+      background: var(--purple-soft);
+      color: var(--purple);
+    }
+
+
+    /* =========================================================
+       INVENTORY TABLE
+       ========================================================= */
+
+    .table-wrapper {
+      overflow-x: auto;
+
+      border: 1px solid var(--border);
+
+      border-radius: 13px;
+
+      background: white;
+    }
+
+
+    table {
+      width: 100%;
+
+      border-collapse: collapse;
+
+      font-size: 11px;
+    }
+
+
+    th {
+      background: var(--surface-soft);
+
+      color: var(--muted);
+
+      font-size: 9px;
+
+      text-transform: uppercase;
+
+      letter-spacing: .04em;
+
+      text-align: left;
+
+      padding: 12px 10px;
+
+      white-space: nowrap;
+    }
+
+
+    td {
+      padding: 12px 10px;
+
+      border-top: 1px solid var(--border);
+
+      white-space: nowrap;
+    }
+
+
+    .product-cell {
+      display: flex;
+
+      align-items: center;
+
+      gap: 8px;
+
+      font-weight: 750;
+    }
+
+
+    .mini-icon {
+      width: 28px;
+      height: 28px;
+
+      display: grid;
+
+      place-items: center;
+
+      background: var(--surface-soft);
+
+      border-radius: 7px;
+
+      border: 1px solid var(--border);
+    }
+
+
+    /* =========================================================
+       BAR CHART
+       ========================================================= */
+
+    .bar-chart {
+      display: flex;
+
+      flex-direction: column;
+
+      gap: 11px;
+
+      margin-top: 15px;
+    }
+
+
+    .bar-row {
+      display: grid;
+
+      grid-template-columns:
+        105px 1fr 45px;
+
+      gap: 9px;
+
+      align-items: center;
+    }
+
+
+    .bar-label {
+      overflow: hidden;
+
+      text-overflow: ellipsis;
+
+      white-space: nowrap;
+
+      font-size: 10px;
+    }
+
+
+    .bar-track {
+      height: 10px;
+
+      background: #edf2f7;
+
+      border-radius: 99px;
+
+      overflow: hidden;
+    }
+
+
+    .bar {
+      height: 100%;
+
+      background: var(--primary);
+
+      border-radius: inherit;
+    }
+
+
+    .bar-value {
+      text-align: right;
+
+      font-size: 10px;
+
+      font-weight: 800;
+    }
+
+
+    /* =========================================================
+       SALES COMPARISON
+       ========================================================= */
+
+    .comparison {
+      display: grid;
+
+      grid-template-columns:
+        repeat(2,1fr);
+
+      gap: 14px;
+
+      align-items: end;
+
+      height: 240px;
+
+      padding: 20px 30px 5px;
+    }
+
+
+    .compare-column {
+      display: flex;
+
+      flex-direction: column;
+
+      align-items: center;
+
+      justify-content: end;
+
+      height: 100%;
+    }
+
+
+    .compare-value {
+      font-size: 12px;
+
+      font-weight: 850;
+
+      margin-bottom: 7px;
+    }
+
+
+    .compare-bar {
+      width: 70px;
+
+      background: var(--primary);
+
+      border-radius: 8px 8px 3px 3px;
+
+      min-height: 3px;
+
+      transition: height .4s ease;
+    }
+
+
+    .compare-label {
+      margin-top: 8px;
+
+      color: var(--muted);
+
+      font-size: 10px;
+    }
+
+
+    /* =========================================================
+       STORE CARDS
+       ========================================================= */
+
+    .store-card {
+      background: white;
+
+      border: 1px solid var(--border);
+
+      border-radius: 14px;
+
+      padding: 16px;
+    }
+
+
+    .store-name {
+      font-size: 14px;
+      font-weight: 850;
+    }
+
+
+    .store-stat {
+      margin-top: 13px;
+    }
+
+
+    .store-stat-label {
+      color: var(--muted);
+
+      font-size: 10px;
+    }
+
+
+    .store-stat-value {
+      margin-top: 3px;
+
+      font-size: 20px;
+
+      font-weight: 850;
+    }
+
+
+    /* =========================================================
+       WINNER
+       ========================================================= */
+
+    .winner {
+      text-align: center;
+
+      padding: 18px;
+
+      border-radius: 13px;
+
+      background: var(--primary-soft);
+
+      border: 1px solid #bfdbfe;
+    }
+
+
+    .winner-icon {
+      font-size: 25px;
+    }
+
+
+    .winner-label {
+      margin-top: 7px;
+
+      color: var(--muted);
+
+      font-size: 10px;
+    }
+
+
+    .winner-value {
+      margin-top: 3px;
+
+      font-size: 16px;
+
+      font-weight: 850;
+    }
+
+
+    /* =========================================================
+       RUNWAY
+       ========================================================= */
+
+    .projection-controls {
+      display: flex;
+
+      gap: 7px;
+
+      flex-wrap: wrap;
+
+      margin-bottom: 16px;
+    }
+
+
+    .period-button {
+      padding: 7px 12px;
+
+      border-radius: 9px;
+
+      border: 1px solid var(--border);
+
+      background: white;
+
+      font-size: 10px;
+
+      font-weight: 700;
+    }
+
+
+    .period-button.active {
+      background: var(--primary);
+
+      border-color: var(--primary);
+
+      color: white;
+    }
+
+
+    .runway-card {
+      border: 1px solid var(--border);
+
+      border-radius: 13px;
+
+      padding: 13px;
+
+      margin-bottom: 9px;
+    }
+
+
+    .runway-head {
+      display: flex;
+
+      justify-content: space-between;
+
+      align-items: center;
+
+      gap: 10px;
+    }
+
+
+    .runway-name {
+      font-weight: 800;
+
+      font-size: 12px;
+    }
+
+
+    .runway-bar {
+      margin-top: 10px;
+
+      height: 10px;
+
+      background: #edf2f7;
+
+      border-radius: 99px;
+
+      overflow: hidden;
+    }
+
+
+    .runway-fill {
+      height: 100%;
+
+      background: var(--success);
+
+      border-radius: inherit;
+    }
+
+
+    .runway-fill.warning {
+      background: var(--amber);
+    }
+
+
+    .runway-fill.critical {
+      background: var(--red);
+    }
+
+
+    .runway-details {
+      display: grid;
+
+      grid-template-columns:
+        repeat(4,1fr);
+
+      gap: 8px;
+
+      margin-top: 10px;
+    }
+
+
+    .runway-detail {
+      padding: 8px;
+
+      border-radius: 8px;
+
+      background: var(--surface-soft);
+    }
+
+
+    .runway-detail-label {
+      color: var(--muted);
+
+      font-size: 8px;
+    }
+
+
+    .runway-detail-value {
+      margin-top: 2px;
+
+      font-size: 10px;
+
+      font-weight: 800;
+    }
+
+
+    /* =========================================================
+       CAPITAL
+       ========================================================= */
+
+    .capital-number {
+      font-size: 28px;
+
+      font-weight: 850;
+    }
+
+
+    .capital-note {
+      margin-top: 10px;
+
+      padding: 11px;
+
+      background: var(--amber-soft);
+
+      border: 1px solid #fde68a;
+
+      color: #78350f;
+
+      border-radius: 10px;
+
+      font-size: 10px;
+
+      line-height: 1.5;
+    }
+
+
+    /* =========================================================
+       COPILOT
+       ========================================================= */
+
+    .copilot-card {
+      background: white;
+
+      border: 1px solid var(--border);
+
+      border-radius: var(--radius);
+
+      padding: 20px;
+
+      box-shadow: var(--shadow);
+    }
+
+
+    .copilot-heading {
+      display: flex;
+
+      align-items: center;
+
+      gap: 10px;
+    }
+
+
+    .copilot-icon {
+      width: 43px;
+      height: 43px;
+
+      display: grid;
+
+      place-items: center;
+
+      background: var(--primary-soft);
+
+      border-radius: 12px;
+
+      font-size: 21px;
+    }
+
+
+    .copilot-heading h2 {
+      margin: 0;
+
+      font-size: 17px;
+    }
+
+
+    .copilot-heading p {
+      margin: 3px 0 0;
+
+      color: var(--muted);
+
+      font-size: 10px;
+    }
+
+
+    .ask-row {
+      display: flex;
+
+      gap: 9px;
+
+      margin-top: 16px;
+    }
+
+
+    .ask-row input {
+      flex: 1;
+
+      min-width: 0;
+
+      padding: 13px 14px;
+
+      border: 1px solid #cfd6df;
+
+      border-radius: 10px;
+
+      outline: none;
+    }
+
+
+    .ask-row input:focus {
+      border-color: var(--primary);
+
+      box-shadow:
+        0 0 0 3px rgba(37,99,235,.12);
+    }
+
+
+    .ask-button {
+      border: 0;
+
+      border-radius: 10px;
+
+      padding: 0 19px;
+
+      background: var(--primary);
+
+      color: white;
+
+      font-weight: 800;
+    }
+
+
+    .chips {
+      display: flex;
+
+      flex-wrap: wrap;
+
+      gap: 7px;
+
+      margin-top: 11px;
+    }
+
+
+    .chip {
+      border: 1px solid var(--border);
+
+      background: white;
+
+      color: #344054;
+
+      padding: 7px 10px;
+
+      border-radius: 999px;
+
+      font-size: 10px;
+    }
+
+
+    .chip:hover {
+      background: var(--primary-soft);
+
+      border-color: #bfdbfe;
+    }
+
+
+    .answer-layout {
+      display: grid;
+
+      grid-template-columns:
+        1.15fr .85fr;
+
+      gap: 13px;
+
+      margin-top: 15px;
+    }
+
+
+    .answer-box {
+      background: var(--surface-soft);
+
+      border: 1px solid var(--border);
+
+      border-radius: 12px;
+
+      padding: 15px;
+    }
+
+
+    .answer-label {
+      font-size: 9px;
+
+      color: var(--muted);
+
+      text-transform: uppercase;
+
+      font-weight: 850;
+
+      letter-spacing: .06em;
+    }
+
+
+    .answer {
+      margin-top: 8px;
+
+      white-space: pre-wrap;
+
+      line-height: 1.6;
+
+      font-size: 13px;
+    }
+
+
+    .recommendation-box {
+      margin-top: 13px;
+
+      padding: 13px;
+
+      background: var(--success-soft);
+
+      border: 1px solid #bbf7d0;
+
+      border-radius: 11px;
+    }
+
+
+    .recommendation-title {
+      color: var(--success);
+
+      font-size: 10px;
+
+      font-weight: 850;
+
+      text-transform: uppercase;
+    }
+
+
+    .recommendation-body {
+      margin-top: 7px;
+
+      font-size: 11px;
+
+      line-height: 1.5;
+    }
+
+
+    .confidence {
+      display: inline-flex;
+
+      margin-top: 11px;
+
+      padding: 5px 8px;
+
+      border-radius: 999px;
+
+      background: var(--primary-soft);
+
+      color: var(--primary);
+
+      font-size: 9px;
+
+      font-weight: 850;
+    }
+
+
+    .evidence-list {
+      display: flex;
+
+      flex-direction: column;
+
+      gap: 8px;
+
+      margin-top: 8px;
+    }
+
+
+    .evidence {
+      padding: 11px;
+
+      border: 1px solid var(--border);
+
+      background: white;
+
+      border-radius: 9px;
+
+      font-size: 10px;
+
+      line-height: 1.5;
+    }
+
+
+    .evidence-id {
+      color: var(--primary);
+
+      font-weight: 850;
+    }
+
+
+    .evidence-source {
+      margin-top: 5px;
+
+      color: var(--muted);
+
+      font-size: 9px;
+    }
+
+
+    .answer-warning {
+      margin-top: 10px;
+
+      padding: 10px;
+
+      border-radius: 9px;
+
+      background: var(--amber-soft);
+
+      color: #78350f;
+
+      font-size: 10px;
+
+      line-height: 1.5;
+    }
+
+
+    /* =========================================================
+       EMPTY
+       ========================================================= */
+
+    .empty-state {
+      padding: 25px 12px;
+
+      text-align: center;
+
+      color: var(--muted);
+
+      background: var(--surface-soft);
+
+      border-radius: 11px;
+
+      font-size: 11px;
+    }
+
+
+    /* =========================================================
+       MOBILE
+       ========================================================= */
+
+    @media (max-width: 1100px) {
+
+      .grid-4 {
+        grid-template-columns:
+          repeat(2,1fr);
+      }
+
+      .grid-3 {
+        grid-template-columns:
+          repeat(2,1fr);
+      }
+
+      .answer-layout {
+        grid-template-columns: 1fr;
+      }
+
+    }
+
+
+    @media (max-width: 800px) {
+
+      .sidebar {
+        width: 70px;
+
+        padding: 12px 8px;
+      }
+
+      .brand {
+        justify-content: center;
+      }
+
+      .brand-text,
+      .nav-label,
+      .nav-text,
+      .nav-count,
+      .sidebar-footer {
+        display: none;
+      }
+
+      .nav-button {
+        justify-content: center;
+      }
+
+      .main {
+        margin-left: 70px;
+
+        width: calc(100% - 70px);
+      }
+
+      .content {
+        padding: 18px;
+      }
+
+      .topbar {
+        padding: 18px;
+      }
+
+      .mode-wrapper {
+        padding: 10px 18px;
+      }
+
+      .mode-inner {
+        flex-direction: column;
+
+        align-items: flex-start;
+      }
+
+      .mode-description {
+        display: none;
+      }
+
+      .grid-2,
+      .grid-3,
+      .grid-4 {
+        grid-template-columns: 1fr;
+      }
+
+      .risk-summary {
+        grid-template-columns:
+          repeat(2,1fr);
+      }
+
+      .fia {
+        grid-template-columns: 1fr;
+      }
+
+    }
+
+
+    @media (max-width: 550px) {
+
+      .topbar-inner {
+        align-items: flex-start;
+      }
+
+      .status-pill {
+        display: none;
+      }
+
+      .page-heading h1 {
+        font-size: 19px;
+      }
+
+      .decision-mode {
+        width: 100%;
+      }
+
+      .mode-btn {
+        flex: 1;
+
+        padding: 8px 5px;
+
+        font-size: 9px;
+      }
+
+      .risk-summary {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .ask-row {
+        flex-direction: column;
+      }
+
+      .ask-button {
+        padding: 12px;
+      }
+
+      .runway-details {
+        grid-template-columns:
+          repeat(2,1fr);
+      }
+
+    }
+
+  </style>
+</head>
+
+
+<body>
+
+<div class="app">
+
+
+  <!-- =========================================================
+       SIDEBAR
+       ========================================================= -->
+
+  <aside class="sidebar">
+
+    <div class="brand">
+
+      <div class="brand-icon">
+        🛍️
+      </div>
+
+      <div class="brand-text">
+
+        <div class="brand-title">
+          Retail Copilot
+        </div>
+
+        <div class="brand-subtitle">
+          Decision Intelligence
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <div class="nav-label">
+      Workspace
+    </div>
+
+
+    <button
+      class="nav-button active"
+      data-page="overview"
+      onclick="navigate('overview')">
+
+      <span class="nav-icon">🏠</span>
+
+      <span class="nav-text">
+        Overview
+      </span>
+
+    </button>
+
+
+    <button
+      class="nav-button"
+      data-page="risk"
+      onclick="navigate('risk')">
+
+      <span class="nav-icon">🚨</span>
+
+      <span class="nav-text">
+        Risk Center
+      </span>
+
+      <span
+        class="nav-count"
+        id="riskNavCount">
+        —
+      </span>
+
+    </button>
+
+
+    <button
+      class="nav-button"
+      data-page="inventory"
+      onclick="navigate('inventory')">
+
+      <span class="nav-icon">📦</span>
+
+      <span class="nav-text">
+        Inventory
+      </span>
+
+      <span
+        class="nav-count"
+        id="inventoryNavCount">
+        —
+      </span>
+
+    </button>
+
+
+    <button
+      class="nav-button"
+      data-page="sales"
+      onclick="navigate('sales')">
+
+      <span class="nav-icon">📈</span>
+
+      <span class="nav-text">
+        Sales Intelligence
+      </span>
+
+    </button>
+
+
+    <button
+      class="nav-button"
+      data-page="stores"
+      onclick="navigate('stores')">
+
+      <span class="nav-icon">🏪</span>
+
+      <span class="nav-text">
+        Store Intelligence
+      </span>
+
+    </button>
+
+
+    <button
+      class="nav-button"
+      data-page="capital"
+      onclick="navigate('capital')">
+
+      <span class="nav-icon">💰</span>
+
+      <span class="nav-text">
+        Capital Risk
+      </span>
+
+    </button>
+
+
+    <button
+      class="nav-button"
+      data-page="planning"
+      onclick="navigate('planning')">
+
+      <span class="nav-icon">🔮</span>
+
+      <span class="nav-text">
+        Planning
+      </span>
+
+    </button>
+
+
+    <button
+      class="nav-button"
+      data-page="copilot"
+      onclick="navigate('copilot')">
+
+      <span class="nav-icon">🤖</span>
+
+      <span class="nav-text">
+        AI Copilot
+      </span>
+
+    </button>
+
+
+    <div class="sidebar-footer">
+
+      Evidence-first retail intelligence.
+
+      <br><br>
+
+      Decisions are grounded in available
+      sales, inventory, store and policy data.
+
+    </div>
+
+  </aside>
+
+
+
+  <!-- =========================================================
+       MAIN
+       ========================================================= -->
+
+  <div class="main">
+
+
+    <!-- TOP BAR -->
+
+    <header class="topbar">
+
+      <div class="topbar-inner">
+
+        <div class="page-heading">
+
+          <h1 id="pageTitle">
+            Retail Sales & Inventory Copilot
+          </h1>
+
+          <p id="pageSubtitle">
+            Turn retail data into clear manager decisions.
+          </p>
+
+        </div>
+
+
+        <div class="top-actions">
+
+          <div class="status-pill">
+
+            <span class="status-dot"></span>
+
+            Live inventory intelligence
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </header>
+
+
+
+    <!-- DECISION MODE -->
+
+    <div class="mode-wrapper">
+
+      <div class="mode-inner">
+
+        <div>
+
+          <div class="mode-label">
+            DECISION MODE
+          </div>
+
+        </div>
+
+
+        <div class="decision-mode">
+
+          <button
+            class="mode-btn active"
+            data-mode="monitor"
+            onclick="setMode('monitor')">
+
+            🟢 Monitor
+
+          </button>
+
+
+          <button
+            class="mode-btn"
+            data-mode="action"
+            onclick="setMode('action')">
+
+            🔵 Take Action
+
+          </button>
+
+
+          <button
+            class="mode-btn"
+            data-mode="analyze"
+            onclick="setMode('analyze')">
+
+            🟣 Analyze
+
+          </button>
+
+        </div>
+
+
+        <div
+          class="mode-description"
+          id="modeDescription">
+
+          Track business health, risks and alerts.
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+
+    <!-- CONTENT -->
+
+    <main class="content">
+
+
+      <!-- =====================================================
+           OVERVIEW
+           ===================================================== -->
+
+      <section
+        id="page-overview"
+        class="page active">
+
+        <div class="section-title">
+
+          <h2>
+            Good morning, Manager 👋
+          </h2>
+
+          <p>
+            Your retail command center for sales and inventory decisions.
+          </p>
+
+        </div>
+
+
+        <div class="grid-4">
+
+          <div class="card kpi">
+
+            <div class="kpi-label">
+              Latest month revenue
+            </div>
+
+            <div
+              class="kpi-value"
+              id="overviewRevenue">
+              —
+            </div>
+
+            <div class="kpi-sub">
+              Recorded sales revenue
+            </div>
+
+          </div>
+
+
+          <div class="card kpi">
+
+            <div class="kpi-label">
+              Revenue change
+            </div>
+
+            <div
+              class="kpi-value"
+              id="overviewRevenueChange">
+              —
+            </div>
+
+            <div class="kpi-sub">
+              Versus previous month
+            </div>
+
+          </div>
+
+
+          <div class="card kpi">
+
+            <div class="kpi-label">
+              Products needing attention
+            </div>
+
+            <div
+              class="kpi-value"
+              id="overviewAttention">
+              —
+            </div>
+
+            <div class="kpi-sub">
+              Active risk signals
+            </div>
+
+          </div>
+
+
+          <div class="card kpi">
+
+            <div class="kpi-label">
+              Stock / replenishment risks
+            </div>
+
+            <div
+              class="kpi-value"
+              id="overviewStockRisk">
+              —
+            </div>
+
+            <div class="kpi-sub">
+              Low-stock and runway risks
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <div
+          id="overviewModeContent"
+          style="margin-top:18px">
+        </div>
+
+
+        <div class="grid-2" style="margin-top:18px">
+
+
+          <div class="card">
+
+            <div class="card-title">
+              Today's Priorities
+            </div>
+
+            <div class="card-subtitle">
+              Highest-value decisions requiring manager attention.
+            </div>
+
+            <div
+              id="overviewPriorities"
+              style="margin-top:13px">
+
+              Loading...
+
+            </div>
+
+          </div>
+
+
+          <div class="card">
+
+            <div class="card-title">
+              🤖 AI Manager Summary
+            </div>
+
+            <div class="card-subtitle">
+              Evidence-based summary of current business health.
+            </div>
+
+            <div
+              id="managerSummary"
+              style="
+                margin-top:14px;
+                font-size:12px;
+                line-height:1.7;
+              ">
+
+              Loading...
+
+            </div>
+
+          </div>
+
+
+        </div>
+
+
+      </section>
+
+
+
+      <!-- =====================================================
+           RISK CENTER
+           ===================================================== -->
+
+      <section
+        id="page-risk"
+        class="page">
+
+        <div class="section-title">
+
+          <h2>
+            🚨 Risk Center
+          </h2>
+
+          <p>
+            Detect what changed, why it matters and what to do next.
+          </p>
+
+        </div>
+
+
+        <div
+          class="risk-summary"
+          id="riskSummary">
+        </div>
+
+
+        <div class="filters">
+
+          <button
+            class="filter-btn active"
+            onclick="setRiskFilter('ALL',this)">
+            All
+          </button>
+
+          <button
+            class="filter-btn"
+            onclick="setRiskFilter('STOCKOUT_RISK',this)">
+            Stock-out
+          </button>
+
+          <button
+            class="filter-btn"
+            onclick="setRiskFilter('LOW_STOCK',this)">
+            Low Stock
+          </button>
+
+          <button
+            class="filter-btn"
+            onclick="setRiskFilter('SALES_DROP',this)">
+            Sales Drop
+          </button>
+
+          <button
+            class="filter-btn"
+            onclick="setRiskFilter('SALES_SPIKE',this)">
+            Sales Spike
+          </button>
+
+          <button
+            class="filter-btn"
+            onclick="setRiskFilter('OVERSTOCK',this)">
+            Overstock
+          </button>
+
+          <button
+            class="filter-btn"
+            onclick="setRiskFilter('NO_MOVEMENT',this)">
+            No Movement
+          </button>
+
+        </div>
+
+
+        <div id="riskList">
+          Loading...
+        </div>
+
+      </section>
+
+
+
+      <!-- =====================================================
+           INVENTORY
+           ===================================================== -->
+
+      <section
+        id="page-inventory"
+        class="page">
+
+        <div class="section-title">
+
+          <h2>
+            📦 Inventory Intelligence
+          </h2>
+
+          <p>
+            Understand stock health and take replenishment decisions.
+          </p>
+
+        </div>
+
+
+        <div
+          class="grid-4"
+          id="inventoryHealth">
+        </div>
+
+
+        <div
+          class="grid-2"
+          style="margin-top:18px">
+
+          <div class="card">
+
+            <div class="card-title">
+              Minimum Replenishment
+            </div>
+
+            <div class="card-subtitle">
+              Minimum quantity needed to reach the reorder point.
+            </div>
+
+            <div
+              id="reorderBasket"
+              style="margin-top:13px">
+
+              Loading...
+
+            </div>
+
+          </div>
+
+
+          <div class="card">
+
+            <div class="card-title">
+              Inventory Interpretation
+            </div>
+
+            <div class="card-subtitle">
+              How the system interprets current stock.
+            </div>
+
+            <div
+              style="
+                margin-top:14px;
+                font-size:11px;
+                line-height:1.7;
+              ">
+
+              <b>Healthy</b> → stock is comfortably above
+              the reorder threshold.
+
+              <br><br>
+
+              <b>Low Stock</b> → stock is at or below the
+              reorder point.
+
+              <br><br>
+
+              <b>No Movement</b> → inventory exists but recent
+              sales are zero.
+
+              <br><br>
+
+              <b>Minimum Top-up</b> is not an optimized purchase
+              order. It only fills the gap to the reorder point.
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <div
+          class="card"
+          style="margin-top:18px">
+
+          <div class="card-title">
+            Inventory Table
+          </div>
+
+          <div class="card-subtitle">
+            Current stock, velocity and coverage by product.
+          </div>
+
+          <div
+            class="table-wrapper"
+            style="margin-top:14px">
+
+            <table>
+
+              <thead>
+
+                <tr>
+
+                  <th>Product</th>
+
+                  <th>Stock</th>
+
+                  <th>Reorder Point</th>
+
+                  <th>Weekly Velocity</th>
+
+                  <th>Days Cover</th>
+
+                  <th>Status</th>
+
+                  <th>Action</th>
+
+                </tr>
+
+              </thead>
+
+              <tbody
+                id="inventoryTable">
+              </tbody>
+
+            </table>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+
+      <!-- =====================================================
+           SALES
+           ===================================================== -->
+
+      <section
+        id="page-sales"
+        class="page">
+
+        <div class="section-title">
+
+          <h2>
+            📈 Sales Intelligence
+          </h2>
+
+          <p>
+            Compare sales movement, revenue and product performance.
+          </p>
+
+        </div>
+
+
+        <div class="grid-4">
+
+          <div class="card kpi">
+
+            <div class="kpi-label">
+              Latest Units
+            </div>
+
+            <div
+              class="kpi-value"
+              id="salesLatestUnits">
+              —
+            </div>
+
+          </div>
+
+
+          <div class="card kpi">
+
+            <div class="kpi-label">
+              Previous Units
+            </div>
+
+            <div
+              class="kpi-value"
+              id="salesPreviousUnits">
+              —
+            </div>
+
+          </div>
+
+
+          <div class="card kpi">
+
+            <div class="kpi-label">
+              Unit Change
+            </div>
+
+            <div
+              class="kpi-value"
+              id="salesUnitChange">
+              —
+            </div>
+
+          </div>
+
+
+          <div class="card kpi">
+
+            <div class="kpi-label">
+              Latest Revenue
+            </div>
+
+            <div
+              class="kpi-value"
+              id="salesLatestRevenue">
+              —
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <div
+          class="grid-2"
+          style="margin-top:18px">
+
+
+          <div class="card">
+
+            <div class="card-title">
+              Latest vs Previous Month
+            </div>
+
+            <div class="card-subtitle">
+              Product-level unit comparison.
+            </div>
+
+            <div
+              id="salesProductSelector"
+              style="margin-top:13px">
+            </div>
+
+
+            <div
+              class="comparison"
+              id="salesComparison">
+            </div>
+
+          </div>
+
+
+          <div class="card">
+
+            <div class="card-title">
+              Sales Performance
+            </div>
+
+            <div class="card-subtitle">
+              Latest-month units sold by product.
+            </div>
+
+            <div
+              id="salesChart"
+              class="bar-chart">
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <div
+          class="card"
+          style="margin-top:18px">
+
+          <div class="card-title">
+            Why should I care?
+          </div>
+
+          <div
+            id="salesInsight"
+            style="
+              margin-top:10px;
+              font-size:12px;
+              line-height:1.7;
+            ">
+          </div>
+
+        </div>
+
+      </section>
+
+
+
+      <!-- =====================================================
+           STORE INTELLIGENCE
+           ===================================================== -->
+
+      <section
+        id="page-stores"
+        class="page">
+
+        <div class="section-title">
+
+          <h2>
+            🏪 Store Intelligence
+          </h2>
+
+          <p>
+            Compare store performance and identify the strongest signals.
+          </p>
+
+        </div>
+
+
+        <div
+          class="grid-3"
+          id="storeCards">
+        </div>
+
+
+        <div
+          class="grid-3"
+          style="margin-top:18px">
+
+          <div
+            class="winner"
+            id="highestRevenueStore">
+
+            🏆
+
+            <div class="winner-label">
+              Highest Revenue
+            </div>
+
+            <div class="winner-value">
+              —
+            </div>
+
+          </div>
+
+
+          <div
+            class="winner"
+            id="highestUnitsStore">
+
+            📦
+
+            <div class="winner-label">
+              Highest Units
+            </div>
+
+            <div class="winner-value">
+              —
+            </div>
+
+          </div>
+
+
+          <div
+            class="winner"
+            id="differentTopProduct">
+
+            ⭐
+
+            <div class="winner-label">
+              Different Top Product
+            </div>
+
+            <div class="winner-value">
+              —
+            </div>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+
+      <!-- =====================================================
+           CAPITAL
+           ===================================================== -->
+
+      <section
+        id="page-capital"
+        class="page">
+
+        <div class="section-title">
+
+          <h2>
+            💰 Inventory Capital Risk
+          </h2>
+
+          <p>
+            Identify inventory units that may be tying up working capacity.
+          </p>
+
+        </div>
+
+
+        <div class="grid-4">
+
+          <div class="card kpi">
+
+            <div class="kpi-label">
+              Units tied up
+            </div>
+
+            <div
+              class="kpi-value"
+              id="capitalUnits">
+              —
+            </div>
+
+            <div class="kpi-sub">
+              Total inventory on hand
+            </div>
+
+          </div>
+
+
+          <div class="card kpi">
+
+            <div class="kpi-label">
+              Slow-moving units
+            </div>
+
+            <div
+              class="kpi-value"
+              id="slowMovingUnits">
+              —
+            </div>
+
+            <div class="kpi-sub">
+              No recent movement
+            </div>
+
+          </div>
+
+
+          <div class="card kpi">
+
+            <div class="kpi-label">
+              Overstock units
+            </div>
+
+            <div
+              class="kpi-value"
+              id="overstockUnits">
+              —
+            </div>
+
+            <div class="kpi-sub">
+              Excess / slow inventory
+            </div>
+
+          </div>
+
+
+          <div class="card kpi">
+
+            <div class="kpi-label">
+              Products needing action
+            </div>
+
+            <div
+              class="kpi-value"
+              id="capitalProducts">
+              —
+            </div>
+
+            <div class="kpi-sub">
+              Unique products
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <div
+          class="capital-note">
+
+          ⚠️ Unit cost is not present in the current dataset.
+          Therefore this page intentionally does not invent a ₹ capital value.
+          It reports inventory units tied up instead.
+
+        </div>
+
+
+        <div
+          class="card"
+          style="margin-top:18px">
+
+          <div class="card-title">
+            Slow-moving inventory
+          </div>
+
+          <div class="card-subtitle">
+            Products with inventory but little or no recent movement.
+          </div>
+
+          <div
+            id="capitalTable"
+            style="margin-top:14px">
+          </div>
+
+        </div>
+
+      </section>
+
+
+
+      <!-- =====================================================
+           PLANNING
+           ===================================================== -->
+
+      <section
+        id="page-planning"
+        class="page">
+
+        <div class="section-title">
+
+          <h2>
+            🔮 Inventory Planning
+          </h2>
+
+          <p>
+            Project inventory runway and turn forecasts into decisions.
+          </p>
+
+        </div>
+
+
+        <div class="card">
+
+          <div class="projection-controls">
+
+            <button
+              class="period-button active"
+              onclick="setProjectionDays(7,this)">
+              7 days
+            </button>
+
+            <button
+              class="period-button"
+              onclick="setProjectionDays(14,this)">
+              14 days
+            </button>
+
+            <button
+              class="period-button"
+              onclick="setProjectionDays(30,this)">
+              30 days
+            </button>
+
+            <button
+              class="period-button"
+              onclick="setProjectionDays(60,this)">
+              60 days
+            </button>
+
+            <button
+              class="period-button"
+              onclick="setProjectionDays(90,this)">
+              90 days
+            </button>
+
+          </div>
+
+
+          <div
+            class="table-wrapper">
+
+            <table>
+
+              <thead>
+
+                <tr>
+
+                  <th>Product</th>
+
+                  <th>Days Cover</th>
+
+                  <th>Projected Demand</th>
+
+                  <th>Ending Stock</th>
+
+                  <th>Status</th>
+
+                  <th>Decision</th>
+
+                </tr>
+
+              </thead>
+
+              <tbody
+                id="planningTable">
+              </tbody>
+
+            </table>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+
+      <!-- =====================================================
+           AI COPILOT
+           ===================================================== -->
+
+      <section
+        id="page-copilot"
+        class="page">
+
+        <div class="section-title">
+
+          <h2>
+            🤖 AI Copilot
+          </h2>
+
+          <p>
+            Ask questions and receive evidence-grounded manager recommendations.
+          </p>
+
+        </div>
+
+
+        <div class="copilot-card">
+
+          <div class="copilot-heading">
+
+            <div class="copilot-icon">
+              🤖
+            </div>
+
+            <div>
+
+              <h2>
+                Ask Copilot
+              </h2>
+
+              <p>
+                Answers are grounded in available retail evidence.
+              </p>
+
+            </div>
+
+          </div>
+
+
+          <div class="ask-row">
+
+            <input
+              id="q"
+              type="text"
+              placeholder="Example: What is running out?"
+              onkeydown="
+                if(event.key === 'Enter') askCopilot()
+              ">
+
+
+            <button
+              class="ask-button"
+              onclick="askCopilot()">
+
+              Ask Copilot
+
+            </button>
+
+          </div>
+
+
+          <div class="chips">
+
+            <button
+              class="chip"
+              onclick="fillQuestion('What needs attention today?')">
+
+              🚨 Today's attention
+
+            </button>
+
+
+            <button
+              class="chip"
+              onclick="fillQuestion('What is running out?')">
+
+              📦 Stock-out risk
+
+            </button>
+
+
+            <button
+              class="chip"
+              onclick="fillQuestion('What is overstocked or not moving?')">
+
+              ⚠️ Overstock
+
+            </button>
+
+
+            <button
+              class="chip"
+              onclick="fillQuestion('How did Coffee Beans do this month?')">
+
+              📈 Product performance
+
+            </button>
+
+
+            <button
+              class="chip"
+              onclick="fillQuestion('What will the weather be tomorrow?')">
+
+              🔒 Unsupported question
+
+            </button>
+
+          </div>
+
+
+          <div
+            class="answer-layout">
+
+            <div class="answer-box">
+
+              <div class="answer-label">
+                Copilot Answer
+              </div>
+
+
+              <div
+                id="answer"
+                class="answer">
+
+                Ask a question to receive
+                an evidence-grounded recommendation.
+
+              </div>
+
+
+              <div
+                id="answerWarning">
+              </div>
+
+
+              <div
+                id="recommendationBox">
+              </div>
+
+
+              <div
+                id="confidenceBox">
+              </div>
+
+            </div>
+
+
+            <div class="answer-box">
+
+              <div class="answer-label">
+                Evidence
+              </div>
+
+
+              <div
+                id="evidence"
+                class="evidence-list">
+
+                <span style="
+                  color:var(--muted);
+                  font-size:10px;
+                ">
+
+                  Evidence will appear after
+                  you ask a question.
+
+                </span>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+    </main>
+
+
+    <footer style="
+      padding:0 28px 25px;
+      color:var(--muted);
+      font-size:10px;
+      text-align:center;
+    ">
+
+      Retail Sales & Inventory Copilot ·
+      Evidence-first manager decision support.
+
+    </footer>
+
+
+  </div>
+
+</div>
+
+
+
+<script>
+
+  /* =========================================================
+     GLOBAL STATE
+     ========================================================= */
+
+  const state = {
+
+    page: "overview",
+
+    mode: "monitor",
+
+    riskFilter: "ALL",
+
+    projectionDays: 7,
+
+    selectedProduct: "",
+
+    summary: null,
+
+    attention: [],
+
+    products: [],
+
+    stores: [],
+
+    runway: []
+
+  };
+
+
+  /* =========================================================
+     HELPERS
+     ========================================================= */
+
+  const $ = id =>
+    document.getElementById(id);
+
+
+  function money(value) {
+
+    return "₹" +
+      Number(value || 0)
+        .toLocaleString("en-IN");
+
+  }
+
+
+  function number(value) {
+
+    return Number(value || 0)
+      .toLocaleString("en-IN");
+
+  }
+
+
+  function escapeHtml(value) {
+
+    return String(value ?? "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+
+  }
+
+
+  function productName(item) {
+
+    return item.name ||
+      item.product ||
+      item.product_name ||
+      item.product_id ||
+      "Unknown Product";
+
+  }
+
+
+  function stock(item) {
+
+    return Number(
+      item.stock ??
+      item.current_stock ??
+      item.inventory ??
+      0
+    );
+
+  }
+
+
+  function reorderPoint(item) {
+
+    return Number(
+      item.reorder_point ??
+      item.reorderPoint ??
+      0
+    );
+
+  }
+
+
+  function latestUnits(item) {
+
+    return Number(
+      item.latest_units ??
+      item.units_sold_latest_month ??
+      item.latest ??
+      item.units ??
+      0
+    );
+
+  }
+
+
+  function previousUnits(item) {
+
+    return Number(
+      item.previous_units ??
+      item.units_sold_previous_month ??
+      item.previous ??
+      0
+    );
+
+  }
+
+
+  function weeklyVelocity(item) {
+
+    return Number(
+      item.weekly_velocity ??
+      item.weeklyVelocity ??
+      latestUnits(item) / 4
+    );
+
+  }
+
+
+  function daysCover(item) {
+
+    if (
+      item.days_cover !== undefined &&
+      item.days_cover !== null
+    ) {
+      return Number(item.days_cover);
+    }
+
+    const velocity =
+      weeklyVelocity(item);
+
+    if (velocity <= 0) {
+      return null;
+    }
+
+    return stock(item) /
+      velocity *
+      7;
+  }
+
+
+  function icon(name) {
+
+    const n =
+      String(name).toLowerCase();
+
+    if (n.includes("coffee")) return "☕";
+    if (n.includes("tea")) return "🍵";
+    if (n.includes("shampoo")) return "🧴";
+    if (n.includes("toothpaste")) return "🪥";
+    if (n.includes("notebook")) return "📓";
+    if (n.includes("usb")) return "🔌";
+    if (n.includes("water")) return "💧";
+    if (n.includes("lamp")) return "💡";
+
+    return "📦";
+  }
+
+
+  function formatType(type) {
+
+    return String(type || "")
+      .replaceAll("_", " ")
+      .toLowerCase()
+      .replace(/\b\w/g, c =>
+        c.toUpperCase()
+      );
+
+  }
+
+
+  /* =========================================================
+     NAVIGATION
+     ========================================================= */
+
+  function navigate(page) {
+
+    state.page = page;
+
+    document
+      .querySelectorAll(".page")
+      .forEach(p =>
+        p.classList.remove("active")
+      );
+
+
+    const target =
+      $("page-" + page);
+
+    if (target) {
+      target.classList.add("active");
+    }
+
+
+    document
+      .querySelectorAll(".nav-button")
+      .forEach(btn => {
+
+        btn.classList.toggle(
+          "active",
+          btn.dataset.page === page
+        );
+
+      });
+
+
+    updatePageHeader();
+
+    renderCurrentPage();
+
+  }
+
+
+  function updatePageHeader() {
+
+    const titles = {
+
+      overview: [
+        "Retail Sales & Inventory Copilot",
+        "Manager command center"
+      ],
+
+      risk: [
+        "Risk Center",
+        "Prioritize the issues that need attention"
+      ],
+
+      inventory: [
+        "Inventory Intelligence",
+        "Stock health and replenishment decisions"
+      ],
+
+      sales: [
+        "Sales Intelligence",
+        "Understand sales movement and revenue"
+      ],
+
+      stores: [
+        "Store Intelligence",
+        "Compare store performance"
+      ],
+
+      capital: [
+        "Inventory Capital Risk",
+        "Identify slow-moving inventory units"
+      ],
+
+      planning: [
+        "Inventory Planning",
+        "Project runway and decide what to do"
+      ],
+
+      copilot: [
+        "AI Copilot",
+        "Evidence-grounded retail decision support"
+      ]
+
+    };
+
+
+    const info =
+      titles[state.page] ||
+      titles.overview;
+
+
+    $("pageTitle").textContent =
+      info[0];
+
+    $("pageSubtitle").textContent =
+      info[1];
+
+  }
+
+
+  /* =========================================================
+     DECISION MODE
+     ========================================================= */
+
+  function setMode(mode) {
+
+    state.mode = mode;
+
+
+    document
+      .querySelectorAll(".mode-btn")
+      .forEach(btn => {
+
+        btn.classList.toggle(
+          "active",
+          btn.dataset.mode === mode
+        );
+
+      });
+
+
+    const descriptions = {
+
+      monitor:
+        "Track business health, risks and alerts.",
+
+      action:
+        "Focus on decisions that require intervention.",
+
+      analyze:
+        "Explore comparisons, trends and explanations."
+
+    };
+
+
+    $("modeDescription").textContent =
+      descriptions[mode];
+
+
+    renderCurrentPage();
+
+  }
+
+
+  function renderCurrentPage() {
+
+    switch(state.page) {
+
+      case "overview":
+        renderOverview();
+        break;
+
+      case "risk":
+        renderRisk();
+        break;
+
+      case "inventory":
+        renderInventory();
+        break;
+
+      case "sales":
+        renderSales();
+        break;
+
+      case "stores":
+        renderStores();
+        break;
+
+      case "capital":
+        renderCapital();
+        break;
+
+      case "planning":
+        renderPlanning();
+        break;
+
+      case "copilot":
+        break;
+
+    }
+
+  }
+
+
+  /* =========================================================
+     LOAD DATA
+     ========================================================= */
+
+  async function loadDashboard() {
+
+    try {
+
+      const responses =
+        await Promise.all([
+
+          fetch("/api/summary"),
+          fetch("/api/attention"),
+          fetch("/api/products"),
+          fetch("/api/stores")
+
+        ]);
+
+
+      state.summary =
+        await responses[0].json();
+
+
+      state.attention =
+        await responses[1].json();
+
+
+      const productData =
+        await responses[2].json();
+
+
+      const storeData =
+        await responses[3].json();
+
+
+      state.products =
+        Array.isArray(productData)
+          ? productData
+          : (
+              productData.products ||
+              []
+            );
+
+
+      state.stores =
+        Array.isArray(storeData)
+          ? storeData
+          : (
+              storeData.stores ||
+              []
+            );
+
+
+      updateNavigationCounts();
+
+      renderCurrentPage();
+
+      loadRunway();
+
+    }
+
+    catch(error) {
+
+      console.error(error);
+
+      showGlobalError();
+
+    }
+
+  }
+
+
+  function showGlobalError() {
+
+    $("overviewPriorities").innerHTML =
+      `<div class="empty-state">
+        Unable to load dashboard data.
+        Check that the Flask server is running.
+      </div>`;
+
+  }
+
+
+  /* =========================================================
+     NAV COUNTS
+     ========================================================= */
+
+  function updateNavigationCounts() {
+
+    $("riskNavCount").textContent =
+      state.attention.length;
+
+
+    const lowStock =
+      state.attention.filter(item =>
+        item.type === "LOW_STOCK" ||
+        item.type === "STOCKOUT_RISK"
+      );
+
+
+    $("inventoryNavCount").textContent =
+      new Set(
+        lowStock.map(item =>
+          item.product
+        )
+      ).size;
+
+  }
+
+
+  /* =========================================================
+     OVERVIEW
+     ========================================================= */
+
+  function renderOverview() {
+
+    const s =
+      state.summary || {};
+
+
+    $("overviewRevenue").textContent =
+      money(s.revenue_latest);
+
+
+    const revenueChange =
+      s.revenue_change_pct;
+
+
+    $("overviewRevenueChange").textContent =
+      revenueChange === null ||
+      revenueChange === undefined
+        ? "N/A"
+        : (
+          (Number(revenueChange) > 0 ? "+" : "") +
+          revenueChange +
+          "%"
+        );
+
+
+    $("overviewRevenueChange")
+      .classList.toggle(
+        "negative",
+        Number(revenueChange) < 0
+      );
+
+
+    $("overviewAttention").textContent =
+      s.attention_count ??
+      state.attention.length;
+
+
+    const stockRisk =
+      uniqueProducts(
+        state.attention.filter(item =>
+          item.type === "LOW_STOCK" ||
+          item.type === "STOCKOUT_RISK"
+        )
+      );
+
+
+    $("overviewStockRisk").textContent =
+      stockRisk.length;
+
+
+    renderOverviewMode();
+
+    renderPriorities();
+
+    renderManagerSummary();
+
+  }
+
+
+  function renderOverviewMode() {
+
+    const box =
+      $("overviewModeContent");
+
+
+    if (state.mode === "monitor") {
+
+      box.innerHTML = `
+
+        <div class="grid-3">
+
+          <div class="card">
+
+            <div class="card-title">
+              🟢 Business Health
+            </div>
+
+            <div class="card-subtitle">
+              Current operating signals.
+            </div>
+
+            <div class="fia">
+
+              <div class="fia-box">
+
+                <div class="fia-label">
+                  Revenue
+                </div>
+
+                <div class="fia-text">
+                  ${money(state.summary?.revenue_latest)}
+                </div>
+
+              </div>
+
+
+              <div class="fia-box">
+
+                <div class="fia-label">
+                  Attention
+                </div>
+
+                <div class="fia-text">
+                  ${state.attention.length}
+                  active signals
+                </div>
+
+              </div>
+
+
+              <div class="fia-box">
+
+                <div class="fia-label">
+                  Stock Risk
+                </div>
+
+                <div class="fia-text">
+                  ${$("overviewStockRisk").textContent}
+                  products
+                </div>
+
+              </div>
+
+            </div>
+
+          </div>
+
+
+          <div class="card">
+
+            <div class="card-title">
+              ⚠️ Risk Signal
+            </div>
+
+            <div class="card-subtitle">
+              Highest-priority inventory issue.
+            </div>
+
+            <div
+              style="
+                margin-top:13px;
+                font-size:12px;
+                line-height:1.6;
+              ">
+
+              ${getTopRiskMessage()}
+
+            </div>
+
+          </div>
+
+
+          <div class="card">
+
+            <div class="card-title">
+              📊 Sales Signal
+            </div>
+
+            <div class="card-subtitle">
+              Latest revenue movement.
+            </div>
+
+            <div
+              style="
+                margin-top:13px;
+                font-size:12px;
+                line-height:1.6;
+              ">
+
+              Revenue changed by
+
+              <b>
+                ${state.summary?.revenue_change_pct ?? "N/A"}%
+              </b>
+
+              versus the previous month.
+
+            </div>
+
+          </div>
+
+        </div>
+
+      `;
+
+      return;
+    }
+
+
+    if (state.mode === "action") {
+
+      box.innerHTML = `
+
+        <div class="card">
+
+          <div class="card-title">
+            🔵 Take Action
+          </div>
+
+          <div class="card-subtitle">
+            Recommended interventions based on deterministic inventory rules.
+          </div>
+
+          <div
+            id="overviewActionList"
+            style="margin-top:13px">
+          </div>
+
+        </div>
+
+      `;
+
+
+      renderOverviewActions();
+
+      return;
+    }
+
+
+    box.innerHTML = `
+
+      <div class="grid-3">
+
+        <div class="card">
+
+          <div class="card-title">
+            📈 Analyze Sales
+          </div>
+
+          <div class="card-subtitle">
+            Compare product movement and revenue.
+          </div>
+
+          <button
+            class="action-button"
+            onclick="navigate('sales')">
+
+            Open Sales Intelligence
+
+          </button>
+
+        </div>
+
+
+        <div class="card">
+
+          <div class="card-title">
+            🏪 Analyze Stores
+          </div>
+
+          <div class="card-subtitle">
+            Compare store-level performance.
+          </div>
+
+          <button
+            class="action-button"
+            onclick="navigate('stores')">
+
+            Open Store Intelligence
+
+          </button>
+
+        </div>
+
+
+        <div class="card">
+
+          <div class="card-title">
+            🤖 Ask Copilot
+          </div>
+
+          <div class="card-subtitle">
+            Get evidence-grounded explanations.
+          </div>
+
+          <button
+            class="action-button"
+            onclick="navigate('copilot')">
+
+            Open AI Copilot
+
+          </button>
+
+        </div>
+
+      </div>
+
+    `;
+
+  }
+
+
+  function renderOverviewActions() {
+
+    const target =
+      $("overviewActionList");
+
+
+    const products =
+      getActionProducts();
+
+
+    if (!products.length) {
+
+      target.innerHTML =
+        `<div class="empty-state">
+          No immediate actions detected.
+        </div>`;
+
+      return;
+
+    }
+
+
+    target.innerHTML =
+      products.slice(0,5)
+      .map(item => {
+
+        const name =
+          productName(item);
+
+
+        const s =
+          stock(item);
+
+
+        const rp =
+          reorderPoint(item);
+
+
+        const qty =
+          Math.max(rp - s, 0);
+
+
+        let action =
+          "Review";
+
+
+        if (
+          s <= rp
+        ) {
+
+          action =
+            `Minimum top-up +${qty}`;
+
+        }
+
+        else if (
+          latestUnits(item) === 0 &&
+          s > 0
+        ) {
+
+          action =
+            "Stop ordering";
+
+        }
+
+
+        return `
+
+          <div class="priority-card">
+
+            <div class="priority-head">
+
+              <div class="priority-icon">
+                ${icon(name)}
+              </div>
+
+              <div>
+
+                <div class="priority-name">
+                  ${escapeHtml(name)}
+                </div>
+
+                <div class="priority-meta">
+                  Stock ${s} · Reorder point ${rp}
+                </div>
+
+              </div>
+
+            </div>
+
+
+            <div class="priority-action">
+
+              Recommended action:
+              <b>${escapeHtml(action)}</b>
+
+            </div>
+
+          </div>
+
+        `;
+
+      })
+      .join("");
+
+  }
+
+
+  function renderPriorities() {
+
+    const target =
+      $("overviewPriorities");
+
+
+    const products =
+      getActionProducts();
+
+
+    if (!products.length) {
+
+      target.innerHTML =
+        `<div class="empty-state">
+          ✓ No immediate priorities detected.
+        </div>`;
+
+      return;
+
+    }
+
+
+    target.innerHTML =
+      products.slice(0,3)
+      .map(item => {
+
+        const name =
+          productName(item);
+
+
+        const s =
+          stock(item);
+
+
+        const rp =
+          reorderPoint(item);
+
+
+        const qty =
+          Math.max(rp - s,0);
+
+
+        const noMovement =
+          latestUnits(item) === 0 &&
+          s > 0;
+
+
+        if (noMovement) {
+
+          return `
+
+            <div class="priority-card warning">
+
+              <div class="priority-head">
+
+                <div class="priority-icon">
+                  ${icon(name)}
+                </div>
+
+                <div>
+
+                  <div class="priority-name">
+                    Review ${escapeHtml(name)}
+                  </div>
+
+                  <div class="priority-meta">
+                    ${s} units in stock · no recent movement
+                  </div>
+
+                </div>
+
+              </div>
+
+
+              <div class="priority-action">
+
+                <b>Why it matters:</b>
+                Inventory is moving very slowly.
+
+                <br>
+
+                <b>Recommended:</b>
+                Avoid reordering and review promotion or shelf allocation.
+
+              </div>
+
+            </div>
+
+          `;
+
+        }
+
+
+        return `
+
+          <div class="priority-card danger">
+
+            <div class="priority-head">
+
+              <div class="priority-icon">
+                ${icon(name)}
+              </div>
+
+              <div>
+
+                <div class="priority-name">
+                  Replenish ${escapeHtml(name)}
+                </div>
+
+                <div class="priority-meta">
+                  Stock ${s} · Reorder point ${rp}
+                </div>
+
+              </div>
+
+            </div>
+
+
+            <div class="priority-action">
+
+              <b>Recommended:</b>
+              Minimum top-up +${qty}
+
+            </div>
+
+          </div>
+
+        `;
+
+      })
+      .join("");
+
+  }
+
+
+  function renderManagerSummary() {
+
+    const s =
+      state.summary || {};
+
+
+    const revenueChange =
+      s.revenue_change_pct;
+
+
+    const low =
+      uniqueProducts(
+        state.attention.filter(item =>
+          item.type === "LOW_STOCK" ||
+          item.type === "STOCKOUT_RISK"
+        )
+      );
+
+
+    const noMovement =
+      uniqueProducts(
+        state.attention.filter(item =>
+          item.type === "NO_MOVEMENT"
+        )
+      );
+
+
+    $("managerSummary").innerHTML = `
+
+      Sales revenue is
+
+      <b>
+        ${revenueChange > 0 ? "up" : "down"}
+        ${Math.abs(Number(revenueChange || 0))}%
+      </b>
+
+      versus the previous month.
+
+      <br><br>
+
+      ${low.length
+        ? `<b>${low.map(x => escapeHtml(productName(x))).join(" and ")}</b>
+           require replenishment attention.`
+        : "No immediate low-stock products were detected."
+      }
+
+      <br><br>
+
+      ${noMovement.length
+        ? `<b>${noMovement.map(x => escapeHtml(productName(x))).join(" and ")}</b>
+           show no recent movement.`
+        : "No products currently show a no-movement signal."
+      }
+
+    `;
+
+  }
+
+
+  function getTopRiskMessage() {
+
+    const item =
+      state.attention.find(x =>
+        x.type === "LOW_STOCK" ||
+        x.type === "STOCKOUT_RISK"
+      );
+
+
+    if (!item) {
+
+      return "No immediate stock risk detected.";
+
+    }
+
+
+    const name =
+      productName(item);
+
+
+    return `
+
+      <b>${escapeHtml(name)}</b>
+      is below or approaching its reorder threshold.
+
+      <br><br>
+
+      Recommended action:
+      review minimum replenishment.
+
+    `;
+
+  }
+
+
+  /* =========================================================
+     RISK CENTER
+     ========================================================= */
+
+  function setRiskFilter(filter, button) {
+
+    state.riskFilter =
+      filter;
+
+
+    document
+      .querySelectorAll(".filter-btn")
+      .forEach(btn =>
+        btn.classList.remove("active")
+      );
+
+
+    button.classList.add("active");
+
+
+    renderRisk();
+
+  }
+
+
+  function renderRisk() {
+
+    renderRiskSummary();
+
+
+    const list =
+      state.riskFilter === "ALL"
+        ? state.attention
+        : state.attention.filter(item =>
+            item.type === state.riskFilter
+          );
+
+
+    const target =
+      $("riskList");
+
+
+    if (!list.length) {
+
+      target.innerHTML =
+        `<div class="empty-state">
+          No risks match this filter.
+        </div>`;
+
+      return;
+
+    }
+
+
+    target.innerHTML =
+      list.map(renderRiskCard)
+      .join("");
+
+  }
+
+
+  function renderRiskSummary() {
+
+    const critical =
+      state.attention.filter(x =>
+        x.type === "STOCKOUT" ||
+        x.type === "STOCKOUT_RISK"
+      ).length;
+
+
+    const high =
+      state.attention.filter(x =>
+        x.type === "LOW_STOCK" ||
+        x.type === "SALES_DROP"
+      ).length;
+
+
+    const medium =
+      state.attention.filter(x =>
+        x.type === "OVERSTOCK" ||
+        x.type === "NO_MOVEMENT"
+      ).length;
+
+
+    const low =
+      state.attention.filter(x =>
+        x.type === "SALES_SPIKE"
+      ).length;
+
+
+    $("riskSummary").innerHTML = `
+
+      <div class="risk-box risk-critical">
+
+        <div class="risk-box-value">
+          ${critical}
+        </div>
+
+        <div class="risk-box-label">
+          🔴 Critical
+        </div>
+
+      </div>
+
+
+      <div class="risk-box risk-high">
+
+        <div class="risk-box-value">
+          ${high}
+        </div>
+
+        <div class="risk-box-label">
+          🟠 High
+        </div>
+
+      </div>
+
+
+      <div class="risk-box risk-medium">
+
+        <div class="risk-box-value">
+          ${medium}
+        </div>
+
+        <div class="risk-box-label">
+          🟡 Medium
+        </div>
+
+      </div>
+
+
+      <div class="risk-box risk-low">
+
+        <div class="risk-box-value">
+          ${low}
+        </div>
+
+        <div class="risk-box-label">
+          🟢 Low
+        </div>
+
+      </div>
+
+    `;
+
+  }
+
+
+  function renderRiskCard(item) {
+
+    const name =
+      productName(item);
+
+
+    const ev =
+      item.evidence || {};
+
+
+    const s =
+      Number(
+        ev.stock ??
+        item.stock ??
+        0
+      );
+
+
+    const rp =
+      Number(
+        ev.reorder_point ??
+        item.reorder_point ??
+        0
+      );
+
+
+    const latest =
+      Number(
+        ev.latest_units ??
+        item.latest_units ??
+        0
+      );
+
+
+    const previous =
+      Number(
+        ev.previous_units ??
+        item.previous_units ??
+        0
+      );
+
+
+    let finding =
+      "";
+
+
+    let impact =
+      "";
+
+
+    let action =
+      "";
+
+
+    if (item.type === "LOW_STOCK") {
+
+      finding =
+        `${s} units in stock versus reorder point ${rp}.`;
+
+      impact =
+        "Available stock is below the defined replenishment threshold.";
+
+      action =
+        `Minimum top-up: +${Math.max(rp-s,0)} units.`;
+
+    }
+
+
+    else if (
+      item.type === "STOCKOUT_RISK"
+    ) {
+
+      finding =
+        `${s} units remain with limited inventory coverage.`;
+
+      impact =
+        "Current demand may consume available stock within the risk window.";
+
+      action =
+        "Review replenishment timing and lead time.";
+
+    }
+
+
+    else if (
+      item.type === "SALES_DROP"
+    ) {
+
+      finding =
+        `Sales changed from ${previous} to ${latest} units.`;
+
+      impact =
+        "Lower demand may affect revenue and future stock planning.";
+
+      action =
+        "Review demand pattern before increasing inventory.";
+
+    }
+
+
+    else if (
+      item.type === "SALES_SPIKE"
+    ) {
+
+      finding =
+        `Sales increased from ${previous} to ${latest} units.`;
+
+      impact =
+        "Sustained demand may increase replenishment pressure.";
+
+      action =
+        "Monitor the next period and prepare measured replenishment.";
+
+    }
+
+
+    else if (
+      item.type === "OVERSTOCK"
+    ) {
+
+      finding =
+        `${s} units are currently held with very low movement.`;
+
+      impact =
+        "Inventory may remain tied up without sufficient demand.";
+
+      action =
+        "Avoid reordering and consider promotion or shelf reallocation.";
+
+    }
+
+
+    else if (
+      item.type === "NO_MOVEMENT"
+    ) {
+
+      finding =
+        `${s} units remain while latest-month sales are zero.`;
+
+      impact =
+        "Inventory is not moving at the current observed demand.";
+
+      action =
+        "Stop ordering and review promotion or shelf allocation.";
+
+    }
+
+
+    else {
+
+      finding =
+        "A change was detected in the available data.";
+
+      impact =
+        "The signal may affect inventory or sales planning.";
+
+      action =
+        "Review the supporting evidence.";
+
+    }
+
+
+    const badge =
+      item.type === "STOCKOUT_RISK"
+        ? "badge-red"
+        : item.type === "LOW_STOCK"
+          ? "badge-amber"
+          : item.type === "SALES_DROP"
+            ? "badge-red"
+            : item.type === "SALES_SPIKE"
+              ? "badge-green"
+              : "badge-purple";
+
+
+    return `
+
+      <div class="risk-card">
+
+        <div class="risk-header">
+
+          <div class="risk-product">
+
+            <div class="product-icon">
+              ${icon(name)}
+            </div>
+
+            <div>
+
+              <div class="product-name">
+                ${escapeHtml(name)}
+              </div>
+
+              <div class="risk-type">
+                ${formatType(item.type)}
+              </div>
+
+            </div>
+
+          </div>
+
+
+          <span class="badge ${badge}">
+            ${formatType(item.type)}
+          </span>
+
+        </div>
+
+
+        <div class="fia">
+
+          <div class="fia-box">
+
+            <div class="fia-label">
+              What happened?
+            </div>
+
+            <div class="fia-text">
+              ${escapeHtml(finding)}
+            </div>
+
+          </div>
+
+
+          <div class="fia-box">
+
+            <div class="fia-label">
+              Why it matters
+            </div>
+
+            <div class="fia-text">
+              ${escapeHtml(impact)}
+            </div>
+
+          </div>
+
+
+          <div class="fia-box">
+
+            <div class="fia-label">
+              Recommended action
+            </div>
+
+            <div class="fia-text">
+              ${escapeHtml(action)}
+            </div>
+
+          </div>
+
+        </div>
+
+
+        ${
+          state.mode === "action"
+            ? `
+              <button
+                class="action-button"
+                onclick="navigate('inventory')">
+
+                Take action
+
+              </button>
+            `
+            : ""
+        }
+
+      </div>
+
+    `;
+
+  }
+
+
+  /* =========================================================
+     INVENTORY
+     ========================================================= */
+
+  function renderInventory() {
+
+    renderInventoryHealth();
+
+    renderReorderBasket();
+
+    renderInventoryTable();
+
+  }
+
+
+  function renderInventoryHealth() {
+
+    let healthy = 0;
+    let low = 0;
+    let risk = 0;
+    let noMovement = 0;
+
+
+    state.products.forEach(item => {
+
+      const s =
+        stock(item);
+
+
+      const rp =
+        reorderPoint(item);
+
+
+      const cover =
+        daysCover(item);
+
+
+      if (
+        latestUnits(item) === 0 &&
+        s > 0
+      ) {
+
+        noMovement++;
+
+      }
+
+      else if (s <= rp) {
+
+        low++;
+
+      }
+
+      else if (
+        cover !== null &&
+        cover <= 14
+      ) {
+
+        risk++;
+
+      }
+
+      else {
+
+        healthy++;
+
+      }
+
+    });
+
+
+    $("inventoryHealth").innerHTML = `
+
+      <div class="card">
+
+        <div class="kpi-label">
+          🟢 Healthy
+        </div>
+
+        <div class="kpi-value">
+          ${healthy}
+        </div>
+
+      </div>
+
+
+      <div class="card">
+
+        <div class="kpi-label">
+          🟠 Low Stock
+        </div>
+
+        <div class="kpi-value">
+          ${low}
+        </div>
+
+      </div>
+
+
+      <div class="card">
+
+        <div class="kpi-label">
+          🔴 At Risk
+        </div>
+
+        <div class="kpi-value">
+          ${risk}
+        </div>
+
+      </div>
+
+
+      <div class="card">
+
+        <div class="kpi-label">
+          ⚪ No Movement
+        </div>
+
+        <div class="kpi-value">
+          ${noMovement}
+        </div>
+
+      </div>
+
+    `;
+
+  }
+
+
+  function renderReorderBasket() {
+
+    const items =
+      state.products.filter(item =>
+        stock(item) <= reorderPoint(item)
+      );
+
+
+    if (!items.length) {
+
+      $("reorderBasket").innerHTML =
+        `<div class="empty-state">
+          ✓ No minimum replenishment required.
+        </div>`;
+
+      return;
+
+    }
+
+
+    const total =
+      items.reduce(
+        (sum,item) =>
+          sum +
+          Math.max(
+            reorderPoint(item) -
+            stock(item),
+            0
+          ),
+        0
+      );
+
+
+    $("reorderBasket").innerHTML = `
+
+      ${items.map(item => {
+
+        const name =
+          productName(item);
+
+
+        const qty =
+          Math.max(
+            reorderPoint(item) -
+            stock(item),
+            0
+          );
+
+
+        return `
+
+          <div class="priority-card warning">
+
+            <div class="priority-head">
+
+              <div class="priority-icon">
+                ${icon(name)}
+              </div>
+
+              <div>
+
+                <div class="priority-name">
+                  ${escapeHtml(name)}
+                </div>
+
+                <div class="priority-meta">
+                  Stock ${stock(item)}
+                  · Reorder point ${reorderPoint(item)}
+                </div>
+
+              </div>
+
+            </div>
+
+
+            <div class="priority-action">
+
+              Minimum top-up:
+              <b>+${qty}</b>
+
+            </div>
+
+          </div>
+
+        `;
+
+      }).join("")}
+
+
+      <div
+        style="
+          margin-top:12px;
+          font-size:12px;
+          font-weight:850;
+        ">
+
+        Total minimum top-up:
+        ${total} units
+
+      </div>
+
+    `;
+
+  }
+
+
+  function renderInventoryTable() {
+
+    const target =
+      $("inventoryTable");
+
+
+    target.innerHTML =
+      state.products
+      .map(item => {
+
+        const name =
+          productName(item);
+
+
+        const s =
+          stock(item);
+
+
+        const rp =
+          reorderPoint(item);
+
+
+        const velocity =
+          weeklyVelocity(item);
+
+
+        const cover =
+          daysCover(item);
+
+
+        let status =
+          "HEALTHY";
+
+
+        let badge =
+          "badge-green";
+
+
+        if (
+          latestUnits(item) === 0 &&
+          s > 0
+        ) {
+
+          status =
+            "NO MOVEMENT";
+
+          badge =
+            "badge-purple";
+
+        }
+
+        else if (s <= rp) {
+
+          status =
+            "LOW STOCK";
+
+          badge =
+            "badge-amber";
+
+        }
+
+        else if (
+          cover !== null &&
+          cover <= 14
+        ) {
+
+          status =
+            "AT RISK";
+
+          badge =
+            "badge-red";
+
+        }
+
+
+        let action =
+          "Monitor";
+
+
+        if (s <= rp) {
+
+          action =
+            `Minimum top-up +${Math.max(rp-s,0)}`;
+
+        }
+
+        else if (
+          latestUnits(item) === 0
+        ) {
+
+          action =
+            "Stop ordering";
+
+        }
+
+
+        return `
+
+          <tr>
+
+            <td>
+
+              <div class="product-cell">
+
+                <div class="mini-icon">
+                  ${icon(name)}
+                </div>
+
+                ${escapeHtml(name)}
+
+              </div>
+
+            </td>
+
+
+            <td>
+              <b>${s}</b>
+            </td>
+
+
+            <td>
+              ${rp}
+            </td>
+
+
+            <td>
+              ${velocity.toFixed(2)}
+            </td>
+
+
+            <td>
+
+              ${
+                cover === null
+                  ? "—"
+                  : cover.toFixed(1) + " days"
+              }
+
+            </td>
+
+
+            <td>
+
+              <span class="badge ${badge}">
+                ${status}
+              </span>
+
+            </td>
+
+
+            <td>
+              ${escapeHtml(action)}
+            </td>
+
+          </tr>
+
+        `;
+
+      })
+      .join("");
+
+  }
+
+
+  /* =========================================================
+     SALES
+     ========================================================= */
+
+  function renderSales() {
+
+    renderSalesMetrics();
+
+    renderSalesSelector();
+
+    renderSalesComparison();
+
+    renderSalesChart();
+
+    renderSalesInsight();
+
+  }
+
+
+  function renderSalesMetrics() {
+
+    const latest =
+      state.products.reduce(
+        (sum,item) =>
+          sum + latestUnits(item),
+        0
+      );
+
+
+    const previous =
+      state.products.reduce(
+        (sum,item) =>
+          sum + previousUnits(item),
+        0
+      );
+
+
+    const change =
+      previous === 0
+        ? null
+        : (
+          (latest - previous) /
+          previous *
+          100
+        );
+
+
+    $("salesLatestUnits").textContent =
+      latest;
+
+
+    $("salesPreviousUnits").textContent =
+      previous;
+
+
+    $("salesUnitChange").textContent =
+      change === null
+        ? "N/A"
+        : (
+          (change > 0 ? "+" : "") +
+          change.toFixed(1) +
+          "%"
+        );
+
+
+    $("salesUnitChange")
+      .classList.toggle(
+        "negative",
+        change < 0
+      );
+
+
+    $("salesLatestRevenue").textContent =
+      money(
+        state.summary?.revenue_latest
+      );
+
+  }
+
+
+  function renderSalesSelector() {
+
+    if (!state.selectedProduct) {
+
+      state.selectedProduct =
+        productName(
+          state.products[0] || {}
+        );
+
+    }
+
+
+    $("salesProductSelector").innerHTML = `
+
+      <select
+        onchange="
+          state.selectedProduct=this.value;
+          renderSalesComparison();
+          renderSalesInsight();
+        "
+        style="
+          width:100%;
+          padding:10px;
+          border:1px solid var(--border);
+          border-radius:9px;
+          background:white;
+        ">
+
+        ${
+          state.products.map(item => {
+
+            const name =
+              productName(item);
+
+            return `
+
+              <option
+                value="${escapeHtml(name)}"
+                ${
+                  name === state.selectedProduct
+                    ? "selected"
+                    : ""
+                }>
+
+                ${escapeHtml(name)}
+
+              </option>
+
+            `;
+
+          }).join("")
+        }
+
+      </select>
+
+    `;
+
+  }
+
+
+  function renderSalesComparison() {
+
+    const item =
+      state.products.find(
+        x =>
+          productName(x) ===
+          state.selectedProduct
+      );
+
+
+    if (!item) {
+
+      $("salesComparison").innerHTML =
+        `<div class="empty-state">
+          No product selected.
+        </div>`;
+
+      return;
+
+    }
+
+
+    const previous =
+      previousUnits(item);
+
+
+    const latest =
+      latestUnits(item);
+
+
+    const max =
+      Math.max(previous,latest,1);
+
+
+    const previousHeight =
+      Math.max(
+        5,
+        previous / max * 170
+      );
+
+
+    const latestHeight =
+      Math.max(
+        5,
+        latest / max * 170
+      );
+
+
+    $("salesComparison").innerHTML = `
+
+      <div class="compare-column">
+
+        <div class="compare-value">
+          ${previous}
+        </div>
+
+        <div
+          class="compare-bar"
+          style="
+            height:${previousHeight}px;
+          ">
+        </div>
+
+        <div class="compare-label">
+          Previous Month
+        </div>
+
+      </div>
+
+
+      <div class="compare-column">
+
+        <div class="compare-value">
+          ${latest}
+        </div>
+
+        <div
+          class="compare-bar"
+          style="
+            height:${latestHeight}px;
+          ">
+        </div>
+
+        <div class="compare-label">
+          Latest Month
+        </div>
+
+      </div>
+
+    `;
+
+  }
+
+
+  function renderSalesChart() {
+
+    const items =
+      [...state.products]
+      .sort(
+        (a,b) =>
+          latestUnits(b) -
+          latestUnits(a)
+      );
+
+
+    const max =
+      Math.max(
+        ...items.map(x =>
+          latestUnits(x)
+        ),
+        1
+      );
+
+
+    $("salesChart").innerHTML =
+      items.map(item => {
+
+        const units =
+          latestUnits(item);
+
+
+        return `
+
+          <div class="bar-row">
+
+            <div
+              class="bar-label"
+              title="${escapeHtml(productName(item))}">
+
+              ${escapeHtml(productName(item))}
+
+            </div>
+
+
+            <div class="bar-track">
+
+              <div
+                class="bar"
+                style="
+                  width:${units/max*100}%;
+                ">
+              </div>
+
+            </div>
+
+
+            <div class="bar-value">
+              ${units}
+            </div>
+
+          </div>
+
+        `;
+
+      }).join("");
+
+  }
+
+
+  function renderSalesInsight() {
+
+    const item =
+      state.products.find(
+        x =>
+          productName(x) ===
+          state.selectedProduct
+      );
+
+
+    if (!item) {
+
+      $("salesInsight").textContent =
+        "Select a product to view its sales interpretation.";
+
+      return;
+
+    }
+
+
+    const previous =
+      previousUnits(item);
+
+
+    const latest =
+      latestUnits(item);
+
+
+    let change =
+      null;
+
+
+    if (previous !== 0) {
+
+      change =
+        (latest - previous) /
+        previous *
+        100;
+
+    }
+
+
+    let finding;
+    let impact;
+    let action;
+
+
+    if (change !== null && change >= 40) {
+
+      finding =
+        `${productName(item)} sales increased ${change.toFixed(1)}% from ${previous} → ${latest} units.`;
+
+      impact =
+        "Higher demand may increase replenishment pressure.";
+
+      action =
+        "Monitor the next sales period and prepare measured replenishment.";
+
+    }
+
+    else if (
+      change !== null &&
+      change <= -30
+    ) {
+
+      finding =
+        `${productName(item)} sales decreased ${Math.abs(change).toFixed(1)}% from ${previous} → ${latest} units.`;
+
+      impact =
+        "Lower demand may reduce the need for additional inventory.";
+
+      action =
+        "Review demand before increasing stock.";
+
+    }
+
+    else {
+
+      finding =
+        `${productName(item)} moved from ${previous} to ${latest} units.`;
+
+      impact =
+        "The observed movement should be considered alongside current inventory.";
+
+      action =
+        "Continue monitoring demand and stock coverage.";
+
+    }
+
+
+    $("salesInsight").innerHTML = `
+
+      <div class="fia">
+
+        <div class="fia-box">
+
+          <div class="fia-label">
+            Finding
+          </div>
+
+          <div class="fia-text">
+            ${escapeHtml(finding)}
+          </div>
+
+        </div>
+
+
+        <div class="fia-box">
+
+          <div class="fia-label">
+            Impact
+          </div>
+
+          <div class="fia-text">
+            ${escapeHtml(impact)}
+          </div>
+
+        </div>
+
+
+        <div class="fia-box">
+
+          <div class="fia-label">
+            Recommended action
+          </div>
+
+          <div class="fia-text">
+            ${escapeHtml(action)}
+          </div>
+
+        </div>
+
+      </div>
+
+    `;
+
+  }
+
+
+  /* =========================================================
+     STORES
+     ========================================================= */
+
+  function renderStores() {
+
+    if (!state.stores.length) {
+
+      $("storeCards").innerHTML =
+        `<div class="empty-state">
+          Store intelligence data is unavailable.
+        </div>`;
+
+      return;
+
+    }
+
+
+    $("storeCards").innerHTML =
+      state.stores
+      .map(store => {
+
+        const name =
+          store.store_name ||
+          store.name ||
+          store.store ||
+          "Store";
+
+
+        const revenue =
+          Number(
+            store.total_revenue ??
+            store.revenue ??
+            0
+          );
+
+
+        const units =
+          Number(
+            store.total_units ??
+            store.units ??
+            0
+          );
+
+
+        const topProduct =
+          store.top_product ||
+          store.topProduct ||
+          "—";
+
+
+        return `
+
+          <div class="store-card">
+
+            <div class="store-name">
+              🏪 ${escapeHtml(name)}
+            </div>
+
+
+            <div class="store-stat">
+
+              <div class="store-stat-label">
+                Revenue
+              </div>
+
+              <div class="store-stat-value">
+                ${money(revenue)}
+              </div>
+
+            </div>
+
+
+            <div class="store-stat">
+
+              <div class="store-stat-label">
+                Units
+              </div>
+
+              <div class="store-stat-value">
+                ${units}
+              </div>
+
+            </div>
+
+
+            <div class="store-stat">
+
+              <div class="store-stat-label">
+                Top Product
+              </div>
+
+              <div
+                style="
+                  margin-top:3px;
+                  font-size:12px;
+                  font-weight:800;
+                ">
+
+                ${escapeHtml(topProduct)}
+
+              </div>
+
+            </div>
+
+          </div>
+
+        `;
+
+      })
+      .join("");
+
+
+    renderStoreWinners();
+
+  }
+
+
+  function getStoreRevenue(store) {
+
+    return Number(
+      store.total_revenue ??
+      store.revenue ??
+      0
+    );
+
+  }
+
+
+  function getStoreUnits(store) {
+
+    return Number(
+      store.total_units ??
+      store.units ??
+      0
+    );
+
+  }
+
+
+  function getStoreName(store) {
+
+    return (
+      store.store_name ||
+      store.name ||
+      store.store ||
+      "Store"
+    );
+
+  }
+
+
+  function getTopProduct(store) {
+
+    return (
+      store.top_product ||
+      store.topProduct ||
+      "—"
+    );
+
+  }
+
+
+  function renderStoreWinners() {
+
+    const highestRevenue =
+      [...state.stores]
+      .sort(
+        (a,b) =>
+          getStoreRevenue(b) -
+          getStoreRevenue(a)
+      )[0];
+
+
+    const highestUnits =
+      [...state.stores]
+      .sort(
+        (a,b) =>
+          getStoreUnits(b) -
+          getStoreUnits(a)
+      )[0];
+
+
+    const topProducts =
+      state.stores.map(
+        getTopProduct
+      );
+
+
+    const different =
+      state.stores.find(
+        store =>
+          topProducts.filter(
+            p =>
+              p === getTopProduct(store)
+          ).length === 1
+      );
+
+
+    $("highestRevenueStore")
+      .querySelector(".winner-value")
+      .textContent =
+      highestRevenue
+        ? getStoreName(highestRevenue)
+        : "—";
+
+
+    $("highestUnitsStore")
+      .querySelector(".winner-value")
+      .textContent =
+      highestUnits
+        ? getStoreName(highestUnits)
+        : "—";
+
+
+    $("differentTopProduct")
+      .querySelector(".winner-value")
+      .textContent =
+      different
+        ? (
+          getStoreName(different) +
+          " → " +
+          getTopProduct(different)
+        )
+        : "No difference";
+
+  }
+
+
+  /* =========================================================
+     CAPITAL
+     ========================================================= */
+
+  function renderCapital() {
+
+    const totalUnits =
+      state.products.reduce(
+        (sum,item) =>
+          sum + stock(item),
+        0
+      );
+
+
+    const noMovement =
+      uniqueProducts(
+        state.attention.filter(item =>
+          item.type === "NO_MOVEMENT"
+        )
+      );
+
+
+    const overstock =
+      uniqueProducts(
+        state.attention.filter(item =>
+          item.type === "OVERSTOCK"
+        )
+      );
+
+
+    const slowMovingNames =
+      new Set([
+        ...noMovement.map(productName),
+        ...overstock.map(productName)
+      ]);
+
+
+    const slowMovingUnits =
+      state.products
+      .filter(item =>
+        slowMovingNames.has(
+          productName(item)
+        )
+      )
+      .reduce(
+        (sum,item) =>
+          sum + stock(item),
+        0
+      );
+
+
+    const overstockUnits =
+      overstock.reduce(
+        (sum,item) =>
+          sum +
+          Number(
+            item.evidence?.stock ??
+            item.stock ??
+            0
+          ),
+        0
+      );
+
+
+    $("capitalUnits").textContent =
+      totalUnits;
+
+
+    $("slowMovingUnits").textContent =
+      slowMovingUnits;
+
+
+    $("overstockUnits").textContent =
+      overstockUnits;
+
+
+    $("capitalProducts").textContent =
+      slowMovingNames.size;
+
+
+    const products =
+      state.products.filter(item =>
+        slowMovingNames.has(
+          productName(item)
+        )
+      );
+
+
+    if (!products.length) {
+
+      $("capitalTable").innerHTML =
+        `<div class="empty-state">
+          No slow-moving inventory detected.
+        </div>`;
+
+      return;
+
+    }
+
+
+    $("capitalTable").innerHTML = `
+
+      <div class="table-wrapper">
+
+        <table>
+
+          <thead>
+
+            <tr>
+
+              <th>Product</th>
+              <th>Units Held</th>
+              <th>Latest Units Sold</th>
+              <th>Interpretation</th>
+              <th>Action</th>
+
+            </tr>
+
+          </thead>
+
+
+          <tbody>
+
+            ${
+              products.map(item => {
+
+                const name =
+                  productName(item);
+
+
+                const isOverstock =
+                  overstock.some(
+                    x =>
+                      productName(x) === name
+                  );
+
+
+                return `
+
+                  <tr>
+
+                    <td>
+
+                      <div class="product-cell">
+
+                        <div class="mini-icon">
+                          ${icon(name)}
+                        </div>
+
+                        ${escapeHtml(name)}
+
+                      </div>
+
+                    </td>
+
+
+                    <td>
+                      ${stock(item)}
+                    </td>
+
+
+                    <td>
+                      ${latestUnits(item)}
+                    </td>
+
+
+                    <td>
+                      ${
+                        isOverstock
+                          ? "Overstock / very slow movement"
+                          : "No recent movement"
+                      }
+                    </td>
+
+
+                    <td>
+                      Stop ordering / review demand
+                    </td>
+
+                  </tr>
+
+                `;
+
+              }).join("")
+            }
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+    `;
+
+  }
+
+
+  /* =========================================================
+     PLANNING / RUNWAY
+     ========================================================= */
+
+  async function loadRunway() {
+
+    try {
+
+      const response =
+        await fetch(
+          "/api/runway?horizon=" +
+          state.projectionDays
+        );
+
+
+      const data =
+        await response.json();
+
+
+      state.runway =
+        Array.isArray(data)
+          ? data
+          : (
+              data.products ||
+              data.runway ||
+              []
+            );
+
+
+      renderPlanning();
+
+    }
+
+    catch(error) {
+
+      console.error(error);
+
+    }
+
+  }
+
+
+  function setProjectionDays(days, button) {
+
+    state.projectionDays =
+      days;
+
+
+    document
+      .querySelectorAll(".period-button")
+      .forEach(btn =>
+        btn.classList.remove("active")
+      );
+
+
+    button.classList.add("active");
+
+
+    loadRunway();
+
+  }
+
+
+  function renderPlanning() {
+
+    const target =
+      $("planningTable");
+
+
+    if (!state.runway.length) {
+
+      target.innerHTML =
+        `<tr>
+          <td colspan="6">
+            No planning data available.
+          </td>
+        </tr>`;
+
+      return;
+
+    }
+
+
+    target.innerHTML =
+      state.runway
+      .map(row => {
+
+        const name =
+          row.name ||
+          row.product ||
+          row.product_name ||
+          "Unknown";
+
+
+        const cover =
+          row.days_cover ??
+          row.daysCover ??
+          null;
+
+
+        const demand =
+          row.projected_demand ??
+          row.projectedDemand ??
+          0;
+
+
+        const ending =
+          row.projected_ending_stock ??
+          row.ending_stock ??
+          row.remaining ??
+          0;
+
+
+        const status =
+          String(
+            row.status ||
+            "HEALTHY"
+          ).toUpperCase();
+
+
+        const decision =
+          getPlanningDecision(
+            status,
+            cover,
+            ending
+          );
+
+
+        let badge =
+          "badge-green";
+
+
+        if (
+          status.includes("CRITICAL") ||
+          status.includes("EXHAUST")
+        ) {
+
+          badge =
+            "badge-red";
+
+        }
+
+        else if (
+          status.includes("RISK")
+        ) {
+
+          badge =
+            "badge-amber";
+
+        }
+
+        else if (
+          status.includes("NO_MOVEMENT")
+        ) {
+
+          badge =
+            "badge-purple";
+
+        }
+
+
+        return `
+
+          <tr>
+
+            <td>
+
+              <div class="product-cell">
+
+                <div class="mini-icon">
+                  ${icon(name)}
+                </div>
+
+                ${escapeHtml(name)}
+
+              </div>
+
+            </td>
+
+
+            <td>
+
+              ${
+                cover === null ||
+                cover === undefined ||
+                Number(cover) >= 999
+                  ? "—"
+                  : Number(cover).toFixed(1)
+              }
+
+            </td>
+
+
+            <td>
+              ${Number(demand).toFixed(1)}
+            </td>
+
+
+            <td>
+              ${Number(ending).toFixed(1)}
+            </td>
+
+
+            <td>
+
+              <span class="badge ${badge}">
+                ${escapeHtml(status)}
+              </span>
+
+            </td>
+
+
+            <td>
+              <b>${escapeHtml(decision)}</b>
+            </td>
+
+          </tr>
+
+        `;
+
+      })
+      .join("");
+
+  }
+
+
+  function getPlanningDecision(
+    status,
+    cover,
+    ending
+  ) {
+
+    const s =
+      String(status)
+      .toUpperCase();
+
+
+    if (
+      s.includes("NO_MOVEMENT")
+    ) {
+
+      return "Stop ordering";
+
+    }
+
+
+    if (
+      s.includes("CRITICAL") ||
+      s.includes("EXHAUST")
+    ) {
+
+      return "Replenish";
+
+    }
+
+
+    if (
+      s.includes("RISK")
+    ) {
+
+      return "Review replenishment";
+
+    }
+
+
+    if (
+      Number(cover) <= 30
+    ) {
+
+      return "Monitor closely";
+
+    }
+
+
+    return "Monitor";
+
+  }
+
+
+  /* =========================================================
+     COPILOT
+     ========================================================= */
+
+  function fillQuestion(question) {
+
+    $("q").value =
+      question;
+
+
+    askCopilot();
+
+  }
+
+
+  async function askCopilot() {
+
+    const question =
+      $("q").value.trim();
+
+
+    if (!question) {
+
+      $("answer").textContent =
+        "Please enter a question.";
+
+      return;
+
+    }
+
+
+    $("answer").textContent =
+      "Thinking…";
+
+
+    $("answerWarning").innerHTML =
+      "";
+
+
+    $("recommendationBox").innerHTML =
+      "";
+
+
+    $("confidenceBox").innerHTML =
+      "";
+
+
+    $("evidence").innerHTML =
+      `<span style="
+        color:var(--muted);
+        font-size:10px;
+      ">
+        Retrieving supporting evidence…
+      </span>`;
+
+
+    try {
+
+      const response =
+        await fetch(
+          "/api/ask",
+          {
+
+            method: "POST",
+
+            headers: {
+              "Content-Type":
+                "application/json"
+            },
+
+            body:
+              JSON.stringify({
+                question
+              })
+
+          }
+        );
+
+
+      const result =
+        await response.json();
+
+
+      if (result.error) {
+
+        $("answer").textContent =
+          result.error;
+
+        return;
+
+      }
+
+
+      $("answer").textContent =
+        result.answer ||
+        "No answer available.";
+
+
+      if (result.warning) {
+
+        $("answerWarning").innerHTML = `
+
+          <div class="answer-warning">
+
+            ⚠️
+            ${escapeHtml(result.warning)}
+
+          </div>
+
+        `;
+
+      }
+
+
+      renderCopilotRecommendation(
+        result,
+        question
+      );
+
+
+      renderCopilotConfidence(
+        result
+      );
+
+
+      renderEvidence(
+        result.evidence || []
+      );
+
+    }
+
+    catch(error) {
+
+      console.error(error);
+
+      $("answer").textContent =
+        "Unable to contact the Copilot service.";
+
+      $("evidence").innerHTML =
+        `<span style="
+          color:var(--red);
+          font-size:10px;
+        ">
+          The Copilot service could not be reached.
+        </span>`;
+
+    }
+
+  }
+
+
+  function renderCopilotConfidence(result) {
+
+    const confidence =
+      result.confidence ||
+      "unknown";
+
+
+    $("confidenceBox").innerHTML = `
+
+      <span class="confidence">
+
+        Confidence:
+        ${escapeHtml(
+          String(confidence).toUpperCase()
+        )}
+
+      </span>
+
+    `;
+
+  }
+
+
+  function renderEvidence(items) {
+
+    if (!items.length) {
+
+      $("evidence").innerHTML =
+        `<span style="
+          color:var(--muted);
+          font-size:10px;
+        ">
+          No supporting evidence was found.
+        </span>`;
+
+      return;
+
+    }
+
+
+    $("evidence").innerHTML =
+      items.map(item => {
+
+        const text =
+          item.text ||
+          "";
+
+
+        const id =
+          item.id ||
+          "E?";
+
+
+        let source =
+          "Retail evidence";
+
+
+        if (
+          item.type === "document"
+        ) {
+
+          source =
+            item.source ||
+            "Internal policy document";
+
+        }
+
+
+        return `
+
+          <div class="evidence">
+
+            <div>
+
+              <span class="evidence-id">
+                [${escapeHtml(id)}]
+              </span>
+
+              <b>
+                ${escapeHtml(
+                  inferEvidenceProduct(text)
+                )}
+              </b>
+
+            </div>
+
+
+            <div style="
+              margin-top:5px;
+            ">
+
+              ${escapeHtml(text)}
+
+            </div>
+
+
+            <div class="evidence-source">
+
+              Source:
+              ${escapeHtml(source)}
+
+            </div>
+
+          </div>
+
+        `;
+
+      }).join("");
+
+  }
+
+
+  function inferEvidenceProduct(text) {
+
+    const lower =
+      String(text).toLowerCase();
+
+
+    const match =
+      state.products.find(item =>
+        lower.includes(
+          productName(item).toLowerCase()
+        )
+      );
+
+
+    return match
+      ? productName(match)
+      : "Supporting evidence";
+
+  }
+
+
+  function renderCopilotRecommendation(
+    result,
+    question
+  ) {
+
+    const answer =
+      String(
+        result.answer || ""
+      ).toLowerCase();
+
+
+    const mentioned =
+      state.products.filter(item =>
+        answer.includes(
+          productName(item).toLowerCase()
+        )
+      );
+
+
+    const actionProducts =
+      mentioned.filter(item =>
+        stock(item) <=
+        reorderPoint(item)
+      );
+
+
+    if (!actionProducts.length) {
+
+      return;
+
+    }
+
+
+    $("recommendationBox").innerHTML = `
+
+      <div class="recommendation-box">
+
+        <div class="recommendation-title">
+          Recommended Action
+        </div>
+
+
+        <div class="recommendation-body">
+
+          ${
+            actionProducts.map(item => {
+
+              const qty =
+                Math.max(
+                  reorderPoint(item) -
+                  stock(item),
+                  0
+                );
+
+
+              return `
+
+                <div style="
+                  margin-bottom:5px;
+                ">
+
+                  <b>
+                    ${escapeHtml(
+                      productName(item)
+                    )}
+                  </b>
+
+                  →
+                  Minimum top-up:
+                  <b>+${qty}</b>
+
+                </div>
+
+              `;
+
+            }).join("")
+          }
+
+
+          <div style="
+            margin-top:7px;
+            color:var(--muted);
+            font-size:9px;
+          ">
+
+            This is the minimum quantity required
+            to reach the reorder point, not an optimized
+            purchase-order quantity.
+
+          </div>
+
+        </div>
+
+      </div>
+
+    `;
+
+  }
+
+
+  /* =========================================================
+     UTILITY
+     ========================================================= */
+
+  function uniqueProducts(items) {
+
+    const seen =
+      new Set();
+
+
+    const result =
+      [];
+
+
+    items.forEach(item => {
+
+      const name =
+        productName(item);
+
+
+      if (!seen.has(name)) {
+
+        seen.add(name);
+
+        result.push(item);
+
+      }
+
+    });
+
+
+    return result;
+
+  }
+
+
+  function getActionProducts() {
+
+    const names =
+      new Set();
+
+
+    const products =
+      [];
+
+
+    state.attention
+      .filter(item =>
+        item.type === "LOW_STOCK" ||
+        item.type === "STOCKOUT_RISK" ||
+        item.type === "NO_MOVEMENT" ||
+        item.type === "OVERSTOCK"
+      )
+      .forEach(item => {
+
+        const name =
+          productName(item);
+
+
+        const product =
+          state.products.find(
+            p =>
+              productName(p) === name
+          );
+
+
+        if (
+          product &&
+          !names.has(name)
+        ) {
+
+          names.add(name);
+
+          products.push(product);
+
+        }
+
+      });
+
+
+    return products;
+
+  }
+
+
+  /* =========================================================
+     START
+     ========================================================= */
+
+  updatePageHeader();
+
+  loadDashboard();
+
+</script>
+
+</body>
+</html>
